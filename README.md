@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Checkpoint 0 Complete — Awaiting Checkpoint 1 Authorization**
+Status: **M0.1 Checkpoint 1 Complete — Awaiting Checkpoint 2 Authorization**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -30,8 +30,9 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 4. ~~Approve Amendment 001 and run the fourth independent judge.~~ Completed 2026-07-21; verdict: `FAIL`.
 5. ~~Run the fifth and final plan judge.~~ Completed 2026-07-21; verdict: `PASS WITH NOTES`.
 6. ~~Authorize and execute Checkpoint 0 of the M0.1 repository foundation.~~ Completed 2026-07-21.
-7. Authorize Checkpoint 1 — toolchain and workspace skeleton. **Current gate.**
-8. Freeze M0.1 before starting M1.0.
+7. ~~Authorize and execute Checkpoint 1 — toolchain and workspace skeleton.~~ Completed 2026-07-21.
+8. Authorize Checkpoint 2 — domain/contracts and dependency guard. **Current gate.**
+9. Freeze M0.1 before starting M1.0.
 
 ## Key documents
 
@@ -49,4 +50,4 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 
 ## Current authorization
 
-M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoint 0 established and cryptographically verified the local Git baseline. **Checkpoint 1, dependency installation, workspace creation, and production source remain unauthorized.**
+M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–1 established the verified Git baseline, toolchain, seven-project workspace, fixture policy, exact dependency lockfile, and passing repository checks. **Checkpoint 2 domain/contracts and architecture-guard implementation remain unauthorized.**

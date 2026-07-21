@@ -1,0 +1,6 @@
+{
+  "name": "@ai-video-assembly/domain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module"
+}
