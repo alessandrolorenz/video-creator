@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Checkpoint 2 Complete — Awaiting Checkpoint 3 Authorization**
+Status: **M0.1 Checkpoint 3 Complete — Awaiting Checkpoint 4 Authorization**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -32,8 +32,10 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 6. ~~Authorize and execute Checkpoint 0 of the M0.1 repository foundation.~~ Completed 2026-07-21.
 7. ~~Authorize and execute Checkpoint 1 — toolchain and workspace skeleton.~~ Completed 2026-07-21.
 8. ~~Authorize and execute Checkpoint 2 — domain/contracts and dependency guard.~~ Completed 2026-07-21.
-9. Authorize Checkpoint 3 — secure desktop shell and narrow IPC. **Current gate.**
-10. Freeze M0.1 before starting M1.0.
+9. ~~Authorize and execute Checkpoint 3 — secure desktop shell and narrow IPC.~~ Completed 2026-07-21.
+10. Authorize Checkpoint 4 — CI and repository documentation. **Current gate.**
+11. Execute Checkpoint 5 automated evidence and the separately authorized implementation-judge/freeze gates.
+12. Start M1.0 only after M0.1 is frozen.
 
 ## Key documents
 
@@ -52,4 +54,4 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 
 ## Current authorization
 
-M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–2 established the verified Git baseline, toolchain, seven-project workspace, domain and provider-neutral contracts, exact dependency lockfile, test suite, fixture policy, and executable repository-boundary guard. **Checkpoint 3 secure desktop shell and narrow IPC remain unauthorized.**
+M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–3 established the verified Git baseline, toolchain, seven-project workspace, domain and provider-neutral contracts, exact dependency lockfile, test suite, fixture guard, and secure Electron shell with a one-method IPC bridge. **Checkpoint 4 CI and repository documentation remain unauthorized.**
