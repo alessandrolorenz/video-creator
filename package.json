@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "pnpm run typecheck:toolchain && pnpm --recursive --if-present build",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings 0",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@types/node": "24.13.3",
     "eslint": "10.7.0",
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.5.3",

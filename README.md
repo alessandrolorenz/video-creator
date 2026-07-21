@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Checkpoint 1 Complete — Awaiting Checkpoint 2 Authorization**
+Status: **M0.1 Checkpoint 2 Complete — Awaiting Checkpoint 3 Authorization**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -31,8 +31,9 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 5. ~~Run the fifth and final plan judge.~~ Completed 2026-07-21; verdict: `PASS WITH NOTES`.
 6. ~~Authorize and execute Checkpoint 0 of the M0.1 repository foundation.~~ Completed 2026-07-21.
 7. ~~Authorize and execute Checkpoint 1 — toolchain and workspace skeleton.~~ Completed 2026-07-21.
-8. Authorize Checkpoint 2 — domain/contracts and dependency guard. **Current gate.**
-9. Freeze M0.1 before starting M1.0.
+8. ~~Authorize and execute Checkpoint 2 — domain/contracts and dependency guard.~~ Completed 2026-07-21.
+9. Authorize Checkpoint 3 — secure desktop shell and narrow IPC. **Current gate.**
+10. Freeze M0.1 before starting M1.0.
 
 ## Key documents
 
@@ -43,6 +44,7 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 - `docs/06-roadmap.md`
 - `docs/07-sdd-workflow-and-gates.md`
 - `docs/08-validation-and-judge-strategy.md`
+- `docs/fixture-policy.md`
 - `docs/specs/M0.1-repository-foundation-spec.md`
 - `docs/specs/M1.0-transcript-selected-cut-spec.md`
 - `docs/prompts/M0.1-planning-prompt.md`
@@ -50,4 +52,4 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 
 ## Current authorization
 
-M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–1 established the verified Git baseline, toolchain, seven-project workspace, fixture policy, exact dependency lockfile, and passing repository checks. **Checkpoint 2 domain/contracts and architecture-guard implementation remain unauthorized.**
+M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–2 established the verified Git baseline, toolchain, seven-project workspace, domain and provider-neutral contracts, exact dependency lockfile, test suite, fixture policy, and executable repository-boundary guard. **Checkpoint 3 secure desktop shell and narrow IPC remain unauthorized.**
