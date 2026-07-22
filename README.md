@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Amendment 001 and Corrected Plan Proposed — Approval Pending**
+Status: **M0.1 Frozen — PASS; M1.0 Amendment 001 Approved — Corrected Plan Re-Judge Authorized**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -89,7 +89,8 @@ The current screen reports only the secure repository-foundation status. Media i
 18. ~~Prepare the test-first M1.0 implementation plan and gate artifacts.~~ Completed 2026-07-22.
 19. ~~Authorize one independent M1.0 plan judge.~~ Completed 2026-07-22; verdict: `FAIL`.
 20. ~~Authorize preparation of a specification amendment and corrected implementation plan addressing the judge findings.~~ Completed 2026-07-22.
-21. Explicitly approve Amendment 001 and authorize an independent re-judge of the corrected plan. **Current gate.**
+21. ~~Explicitly approve Amendment 001 and authorize an independent re-judge of the corrected plan.~~ Completed 2026-07-22.
+22. Obtain and record the independent re-judge verdict on the exact corrected-plan SHA. **Current gate.**
 
 ## Key documents
 
@@ -103,7 +104,7 @@ The current screen reports only the secure repository-foundation status. Media i
 - [Fixture policy](docs/fixture-policy.md)
 - `docs/specs/M0.1-repository-foundation-spec.md`
 - `docs/specs/M1.0-transcript-selected-cut-spec.md`
-- [M1.0 proposed Amendment 001](docs/specs/M1.0-amendment-001-deterministic-ingest-results.md)
+- [M1.0 approved Amendment 001](docs/specs/M1.0-amendment-001-deterministic-ingest-results.md)
 - [M1.0 repository audit](docs/specs/M1.0-repository-audit.md)
 - [M1.0 implementation plan](docs/specs/M1.0-implementation-plan.md)
 - `docs/prompts/M0.1-planning-prompt.md`
@@ -112,4 +113,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. The M1.0 specification is frozen, and the first independent Gate 4 plan judge returned `FAIL`. Amendment 001 and a corrected seven-checkpoint plan are now proposed, but the amendment has not been approved or applied. **The re-judge, implementation, dependency changes, implementation-candidate publication, and external `ffprobe` installation remain unauthorized.**
+M0.0 and M0.1 remain frozen. Amendment 001 is now an approved normative companion to the frozen M1.0 specification, and one independent re-judge of the corrected seven-checkpoint plan is authorized. **Implementation, dependency changes, implementation-candidate publication, and external `ffprobe` installation remain unauthorized pending a passing plan verdict and a separate checkpoint authorization.**
