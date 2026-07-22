@@ -1,8 +1,8 @@
-import type { FoundationBridge } from '../shared/ipc.js';
+import type { DesktopBridge } from '../shared/ingest-ipc.js';
 
 declare global {
   interface Window {
-    aiVideoAssembly: FoundationBridge;
+    aiVideoAssembly: DesktopBridge;
   }
 }
 

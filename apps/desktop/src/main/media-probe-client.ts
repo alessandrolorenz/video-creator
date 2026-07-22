@@ -25,7 +25,8 @@ export interface MainMediaProbeRequestV1 {
   readonly byteSize: number;
 }
 
-export type MainMediaProbeErrorCodeV1 = MediaProbeErrorCode | 'WORKER_UNAVAILABLE';
+export type MainMediaProbeErrorCodeV1 =
+  MediaProbeErrorCode | 'FFPROBE_CONFIGURATION_INVALID' | 'WORKER_UNAVAILABLE';
 
 export type MainMediaProbeResultV1 =
   | Exclude<MediaProbeResultV1, { readonly status: 'failed' }>

@@ -1,0 +1,6 @@
+{
+  "name": "ai-video-assembly-utility-integration-harness",
+  "private": true,
+  "type": "module",
+  "main": "main.mjs"
+}

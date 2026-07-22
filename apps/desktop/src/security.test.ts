@@ -31,8 +31,20 @@ describe('desktop security structure', () => {
   it('declares no Node global in the renderer', () => {
     const declaration = source('src/renderer/global.d.ts');
 
-    expect(declaration).toContain('aiVideoAssembly: FoundationBridge');
+    expect(declaration).toContain('aiVideoAssembly: DesktopBridge');
     expect(declaration).not.toMatch(/NodeJS|process|require|Buffer|ipcRenderer/);
+    expect(declaration).not.toMatch(/absolutePath|filesystem|command|environment|UtilityProcess/);
+  });
+
+  it('keeps the semantic preload surface free of raw IPC and privileged values', () => {
+    const bridge = source('src/preload/bridge.ts');
+    const declaration = source('src/renderer/global.d.ts');
+
+    expect(bridge).toContain('INGEST_POLL_INTERVAL_MIN_MS');
+    expect(`${bridge}\n${declaration}`).not.toMatch(
+      /absolutePath|process\.env|UtilityProcess|child_process|readFile|execFile|spawn\(/,
+    );
+    expect(bridge).not.toMatch(/\bon\s*:\s*|addListener|channel:\s*string/);
   });
 
   it('sets a restrictive renderer content security policy', () => {
