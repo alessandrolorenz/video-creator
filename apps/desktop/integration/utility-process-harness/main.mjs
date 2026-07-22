@@ -44,7 +44,7 @@ function failSafely(error) {
 async function run() {
   debug('ready');
   const [workerPath, goodExecutable, badExecutable, successfulMedia, failedMedia, slowMedia] =
-    process.argv.slice(2);
+    process.argv.slice(-6);
 
   try {
     const factory = createElectronUtilityProcessFactoryV1(

@@ -98,6 +98,7 @@ describe('real Electron utility-process integration', () => {
         ? ['--no-sandbox', '--disable-gpu', ...(useHeadless ? ['--headless'] : [])]
         : []),
       resolve(desktopRoot, 'integration/utility-process-harness'),
+      'launcher-injected-argument',
       resolve(desktopRoot, 'dist/worker/index.js'),
       goodExecutable,
       badExecutable,
