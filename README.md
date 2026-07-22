@@ -27,7 +27,9 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 Requirements:
 
 - Node.js `24.18.x`;
-- pnpm `11.9.x`.
+- pnpm `11.9.x`;
+- for a real media import, an external `ffprobe` compatible with the frozen M1.0
+  capability check. The repository does not install or download it.
 
 Install the exact locked dependencies:
 
@@ -54,6 +56,55 @@ Build and launch the desktop ingest screen:
 pnpm build
 pnpm --dir apps/desktop start
 ```
+
+The empty screen and automated suite do not need `ffprobe`. A real video import
+resolves the executable as the bare command `ffprobe`; development may instead set
+`AI_VIDEO_ASSEMBLY_FFPROBE_PATH` to an absolute executable path before launching the
+desktop app. The main process validates the configuration and the utility worker runs
+only fixed argument arrays with `shell: false`.
+
+### Timed transcript input
+
+After the video metadata is ready, choose one UTF-8 JSON file using the strict V1
+shape below. This example uses seconds; `microseconds` and `milliseconds` are also
+accepted time units.
+
+```json
+{
+  "schemaVersion": 1,
+  "granularity": "segment",
+  "timeUnit": "seconds",
+  "language": "pt-BR",
+  "entries": [
+    {
+      "text": "Olá, este é o primeiro trecho.",
+      "start": 0,
+      "end": 2.4,
+      "speakerId": "speaker-1",
+      "confidence": 0.98
+    },
+    {
+      "text": "E este é o trecho seguinte.",
+      "start": 2.4,
+      "end": 5.1
+    }
+  ]
+}
+```
+
+Root and entry objects are closed: extra keys are rejected. Entries must be ordered,
+non-overlapping, positive-length intervals, and the final `end` cannot exceed the
+selected video's duration. The transcript file must contain 2 bytes through 20 MiB;
+the full limits and precedence rules are frozen in the
+[M1.0 specification](docs/specs/M1.0-transcript-selected-cut-spec.md).
+
+### Privacy and current limits
+
+Video and transcript contents stay local in M1.0. Absolute paths, transcript text,
+raw `ffprobe` output, process details, and environment configuration stay inside the
+privileged main/worker boundary; the sandboxed renderer receives sanitized display
+names, metadata summaries, fixed errors, and progress state only. M1.0 makes no AI or
+cloud request, so no OpenAI API key is needed.
 
 The current M1.0 screen accepts one video and one timed transcript through native dialogs, reports bounded validation progress, and shows only sanitized summaries. Passage selection, matching, timeline editing, preview, render, export, AI, persistence, and multi-asset workflows remain intentionally absent.
 
@@ -100,7 +151,8 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 28. ~~Explicitly authorize publication of M1.0 Checkpoint 3 and, after hosted CI passes, authorize Checkpoint 4 — main-owned privileged adapters, utility client, and ingest controller.~~ Completed 2026-07-22; CP3 hosted CI and CP4 local verification `PASS`.
 29. ~~Explicitly authorize publication of M1.0 Checkpoint 4 and, after hosted CI passes, authorize Checkpoint 5 — strict IPC/preload surface, lifecycle wiring, and real Electron utility-process integration.~~ Completed 2026-07-22; CP4 hosted CI and CP5 local verification `PASS`.
 30. ~~Explicitly authorize publication of M1.0 Checkpoint 5 and, after hosted CI passes, authorize Checkpoint 6 — renderer ingest UX.~~ Completed 2026-07-22; the Linux launcher issue was isolated and corrected, and hosted run [`29952857177`](https://github.com/alessandrolorenz/video-creator/actions/runs/29952857177) passed on exact commit `faa36e5787a11b19cecc11d39e37e25a78a8bd38`.
-31. Explicitly authorize publication of M1.0 Checkpoint 6 and the next gated step. **Current gate after local CP6 handoff.**
+31. ~~Explicitly authorize publication of M1.0 Checkpoint 6 and, after hosted CI passes, authorize Checkpoint 7 — operational docs and clean-room evidence.~~ Completed 2026-07-22; CP6 hosted run [`29954096201`](https://github.com/alessandrolorenz/video-creator/actions/runs/29954096201) passed on exact commit `971ed19ff5ee1582aeb29b38a3c42434c949b660`, and CP7 clean-room verification passed locally.
+32. Explicitly authorize publication of M1.0 Checkpoint 7 and the next post-implementation gate. **Current gate after local CP7 handoff.**
 
 ## Key documents
 
@@ -125,4 +177,4 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 5 are published with green hosted CI; the effective CP5 head is `faa36e5787a11b19cecc11d39e37e25a78a8bd38`. Checkpoint 6 was activated after that exact green gate, implemented test-first, and verified locally with a compiled Electron smoke that requires no real `ffprobe`. **Checkpoint 6 publication, Checkpoint 7, external `ffprobe` installation/execution, and all later work remain separately gated and unauthorized.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 6 are published with green hosted CI; CP6 is exact commit `971ed19ff5ee1582aeb29b38a3c42434c949b660`, hosted run `29954096201`. Checkpoint 7 operational documentation and clean-room evidence passed locally against that immutable CP6 archive. **Checkpoint 7 publication, independent implementation judgment, external `ffprobe` installation/execution, real-input manual smoke, freeze, and all later work remain separately gated and unauthorized.**
