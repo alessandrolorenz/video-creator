@@ -50,6 +50,14 @@ const job = {
 };
 
 const request = { job, displayName: 'movie.mp4', byteSize: 1_024 };
+const replacementRequest = {
+  ...request,
+  job: {
+    ...job,
+    jobId: jobId('job-2'),
+    source: { ...job.source, assetId: assetId('asset-2') },
+  },
+};
 
 function harness(factoryOverride?: UtilityProcessFactory) {
   const transport = new FakeTransport();
@@ -272,6 +280,65 @@ describe('main utility-process client', () => {
     test.client.shutdown();
     await expect(pending).resolves.toEqual({ result: cancelledResult() });
     expect(test.transport.terminate).toHaveBeenCalledTimes(1);
+  });
+
+  it('latches cancellation before configuration and sends only the replacement probe', async () => {
+    const test = harness();
+    const cancelled = test.client.probe(request);
+
+    expect(test.client.cancel(job.jobId)).toBe(true);
+    await expect(cancelled).resolves.toEqual({ result: cancelledResult() });
+
+    const replacement = test.client.probe(replacementRequest);
+    test.transport.receive({ contractVersion: 1, type: 'configured' });
+    expect(test.transport.sent).toEqual([
+      { contractVersion: 1, type: 'configure', executable: '/opt/ffprobe' },
+      { contractVersion: 1, type: 'probe', ...replacementRequest },
+    ]);
+
+    test.transport.receive({
+      contractVersion: 1,
+      type: 'result',
+      jobId: 'job-2',
+      result: { status: 'cancelled', jobId: 'job-2' },
+    });
+    await expect(replacement).resolves.toMatchObject({ result: { jobId: 'job-2' } });
+  });
+
+  it('queues replacement until the sent cancelled job reaches its terminal result', async () => {
+    const test = harness();
+    test.transport.receive({ contractVersion: 1, type: 'configured' });
+    const cancelled = test.client.probe(request);
+
+    expect(test.client.cancel(job.jobId)).toBe(true);
+    await expect(cancelled).resolves.toEqual({ result: cancelledResult() });
+    const replacement = test.client.probe(replacementRequest);
+
+    expect(test.transport.sent).toEqual([
+      { contractVersion: 1, type: 'configure', executable: '/opt/ffprobe' },
+      { contractVersion: 1, type: 'probe', ...request },
+      { contractVersion: 1, type: 'cancel', jobId: 'job-1' },
+    ]);
+    test.transport.receive({ contractVersion: 1, type: 'accepted', jobId: 'job-1' });
+    test.transport.receive({
+      contractVersion: 1,
+      type: 'result',
+      jobId: 'job-1',
+      result: cancelledResult(),
+    });
+    expect(test.transport.sent.at(-1)).toEqual({
+      contractVersion: 1,
+      type: 'probe',
+      ...replacementRequest,
+    });
+
+    test.transport.receive({
+      contractVersion: 1,
+      type: 'result',
+      jobId: 'job-2',
+      result: { status: 'cancelled', jobId: 'job-2' },
+    });
+    await expect(replacement).resolves.toMatchObject({ result: { jobId: 'job-2' } });
   });
 
   it('rejects extra keys in a configured response before sending probe work', async () => {

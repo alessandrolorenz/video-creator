@@ -148,6 +148,11 @@ describe('real Electron utility-process integration', () => {
       failure: { status: 'failed', code: 'MEDIA_UNSUPPORTED' },
       incompatible: { status: 'failed', code: 'FFPROBE_INCOMPATIBLE' },
       cancellation: { status: 'cancelled', accepted: true },
+      replacement: {
+        status: 'succeeded',
+        displayName: 'replacement.mov',
+        versionLine: 'ffprobe version fake-1.0',
+      },
       shutdown: 'completed',
     });
     expect(output.includes(root)).toBe(false);

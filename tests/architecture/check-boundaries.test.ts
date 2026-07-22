@@ -1,4 +1,5 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
@@ -293,6 +294,20 @@ describe('repository boundary guard', () => {
 
     expect((await checkRepository(root)).join('\n')).toContain(
       'binary content is forbidden by repository policy: fixture.data',
+    );
+  });
+
+  it('skips ignored untracked smoke inputs but still rejects the same path when tracked', async () => {
+    const root = repository();
+    execFileSync('git', ['init', '--quiet'], { cwd: root });
+    write(root, '.gitignore', 'local-smoke-inputs/\n');
+    write(root, 'local-smoke-inputs/private.mp4', new Uint8Array([0, 1, 2, 3]));
+
+    expect(await checkRepository(root)).toEqual([]);
+
+    execFileSync('git', ['add', '-f', 'local-smoke-inputs/private.mp4'], { cwd: root });
+    expect((await checkRepository(root)).join('\n')).toContain(
+      'binary fixture is forbidden by repository policy: local-smoke-inputs/private.mp4',
     );
   });
 

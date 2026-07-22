@@ -187,5 +187,13 @@ describe('strict ingest IPC contracts', () => {
         value: { contractVersion: 1, state: 'empty', activeJobId: 'job-1' },
       }).ok,
     ).toBe(false);
+    for (const code of ['DIALOG_CANCELLED', 'PROBE_CANCELLED', 'TRANSCRIPT_CANCELLED']) {
+      expect(
+        parseChooseOperationResponse({
+          ok: false,
+          error: { code, message: 'Cancellation is an outcome, not an error.' },
+        }).ok,
+      ).toBe(false);
+    }
   });
 });

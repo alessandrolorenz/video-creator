@@ -83,7 +83,8 @@ export function createMediaProbeWorker(dependencies: MediaProbeWorkerDependencie
       return;
     }
     if (message.type === 'cancel') {
-      if (!active || active.jobId !== message.jobId) {
+      if (!active) return;
+      if (active.jobId !== message.jobId) {
         dependencies.port.postMessage(protocolError('Cancellation job identity does not match.'));
         return;
       }

@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 5 Published — Hosted CI PASS; Checkpoint 6 Implemented Locally — PASS**
+Status: **M0.1 Frozen — PASS; M1.0 Implementation Judge — FAIL; Narrow Correction Verified Locally — Publication Pending**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -153,7 +153,8 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 30. ~~Explicitly authorize publication of M1.0 Checkpoint 5 and, after hosted CI passes, authorize Checkpoint 6 — renderer ingest UX.~~ Completed 2026-07-22; the Linux launcher issue was isolated and corrected, and hosted run [`29952857177`](https://github.com/alessandrolorenz/video-creator/actions/runs/29952857177) passed on exact commit `faa36e5787a11b19cecc11d39e37e25a78a8bd38`.
 31. ~~Explicitly authorize publication of M1.0 Checkpoint 6 and, after hosted CI passes, authorize Checkpoint 7 — operational docs and clean-room evidence.~~ Completed 2026-07-22; CP6 hosted run [`29954096201`](https://github.com/alessandrolorenz/video-creator/actions/runs/29954096201) passed on exact commit `971ed19ff5ee1582aeb29b38a3c42434c949b660`, and CP7 clean-room verification passed locally.
 32. ~~Explicitly authorize publication of M1.0 Checkpoint 7 and, after hosted CI passes, authorize an independent implementation judge.~~ Completed 2026-07-22; CP7 hosted run [`29954962344`](https://github.com/alessandrolorenz/video-creator/actions/runs/29954962344) passed on exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`; the independent judge returned `FAIL` with three blocking findings.
-33. Explicitly authorize a narrow correction plan for the judge findings and a new independent re-judge. **Current gate after the M1.0 implementation-judge `FAIL`.**
+33. ~~Explicitly authorize and implement a narrow local correction for the implementation-judge findings.~~ Authorized, implemented, and authoritatively verified locally 2026-07-22.
+34. Explicitly authorize publication of the judge-report and correction commits and, only after hosted CI passes on the exact correction SHA, authorize a new independent implementation judge. **Next gate; not yet authorized.**
 
 ## Key documents
 
@@ -172,10 +173,12 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 - [M1.0 repository audit](docs/specs/M1.0-repository-audit.md)
 - [M1.0 implementation plan](docs/specs/M1.0-implementation-plan.md)
 - [M1.0 final plan-judge report](docs/specs/M1.0-final-plan-judge-report.md)
+- [M1.0 independent implementation-judge report](docs/specs/M1.0-independent-judge-report.md)
+- [M1.0 implementation-judge correction](docs/specs/M1.0-implementation-judge-correction.md)
 - `docs/prompts/M0.1-planning-prompt.md`
 - `docs/specs/M0.0-freeze-report.md`
 - [M0.1 freeze report](docs/specs/M0.1-freeze-report.md)
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 7 are published with green hosted CI; CP7 is exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`, hosted run `29954962344`. The separately authorized independent implementation judge reproduced the checks but returned **FAIL** on subprocess close-wait, cancellation/replacement races, and missing renderer metadata/warnings. **Corrections, re-judge, external `ffprobe` installation/execution, real-input manual smoke, freeze, and all later work remain separately gated and unauthorized.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 7 are published with green hosted CI; CP7 is exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`, hosted run `29954962344`. The independent implementation judge returned **FAIL** on subprocess close-wait, cancellation/replacement races, and missing renderer metadata/warnings. The product owner authorized a narrow local correction, which is implemented with test-first regressions and has passed the full authoritative sequence. The local `videos-teste/` input directory is ignored, private, and reserved for a later authorized smoke; it has not been inspected or processed. **Publication, re-judge, external `ffprobe` installation/execution, real-input manual smoke, freeze, and all later work remain separately gated and unauthorized.**

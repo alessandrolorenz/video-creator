@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import { builtinModules } from 'node:module';
 import { dirname, extname, join, relative, resolve, sep } from 'node:path';
@@ -67,6 +68,27 @@ async function walk(directory, files = []) {
     else if (entry.isFile()) files.push(path);
   }
   return files;
+}
+
+async function repositoryVisibleFiles(root) {
+  try {
+    const output = execFileSync(
+      'git',
+      ['-C', root, 'ls-files', '--cached', '--others', '--exclude-standard', '-z'],
+      {
+        encoding: 'utf8',
+        maxBuffer: 16 * 1024 * 1024,
+        stdio: ['ignore', 'pipe', 'ignore'],
+      },
+    );
+    return output
+      .split('\0')
+      .filter((path) => path.length > 0)
+      .map((path) => join(root, path))
+      .filter(existsSync);
+  } catch {
+    return walk(root);
+  }
 }
 
 async function loadWorkspaces(root) {
@@ -335,7 +357,7 @@ async function checkFixtures(root, errors) {
     errors.push('packages/fixtures is forbidden by repository policy');
   }
 
-  for (const path of await walk(root)) {
+  for (const path of await repositoryVisibleFiles(root)) {
     const displayPath = toPosix(relative(root, path));
     if (BINARY_FIXTURE_EXTENSIONS.has(extname(path).toLowerCase())) {
       errors.push(`binary fixture is forbidden by repository policy: ${displayPath}`);

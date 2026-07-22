@@ -40,14 +40,30 @@ function activeTranscript(snapshot: RendererIngestSnapshotV1): boolean {
   return snapshot.state === 'choosing-transcript' || snapshot.state === 'validating-transcript';
 }
 
-function retryLabel(error: RendererIngestErrorV1 | undefined): string {
-  return error?.code.startsWith('TRANSCRIPT_') ? 'Retry transcript' : 'Retry video';
+function retryLabel(
+  error: RendererIngestErrorV1 | undefined,
+  retryTarget: RendererIngestUiState['retryTarget'],
+): string {
+  return retryTarget === 'transcript' || error?.code.startsWith('TRANSCRIPT_')
+    ? 'Retry transcript'
+    : 'Retry video';
 }
 
 function MediaSummary({ snapshot }: { readonly snapshot: RendererIngestSnapshotV1 }) {
   const media = snapshot.media;
   if (!media) return null;
-  const frameRate = media.primaryVideo.averageFrameRate;
+  const averageFrameRate = media.primaryVideo.averageFrameRate;
+  const realFrameRate = media.primaryVideo.realFrameRate;
+  const timeBase = media.primaryVideo.timeBase;
+  const audioDetails = [
+    media.primaryAudio.codecName,
+    media.primaryAudio.sampleRate === undefined
+      ? 'sample rate unavailable'
+      : `${media.primaryAudio.sampleRate} Hz`,
+    media.primaryAudio.channelCount === undefined
+      ? 'channels unavailable'
+      : `${media.primaryAudio.channelCount} ${media.primaryAudio.channelCount === 1 ? 'channel' : 'channels'}`,
+  ];
   return createElement(
     'section',
     { 'aria-labelledby': 'media-heading', className: 'summary-card' },
@@ -81,20 +97,64 @@ function MediaSummary({ snapshot }: { readonly snapshot: RendererIngestSnapshotV
       createElement(
         'div',
         null,
-        createElement('dt', null, 'Frame rate'),
-        createElement('dd', null, frameRate ? formatRational(frameRate) : 'Unavailable'),
+        createElement('dt', null, 'Average frame rate'),
+        createElement(
+          'dd',
+          null,
+          averageFrameRate ? formatRational(averageFrameRate) : 'Unavailable',
+        ),
+      ),
+      createElement(
+        'div',
+        null,
+        createElement('dt', null, 'Real/base frame rate'),
+        createElement('dd', null, realFrameRate ? formatRational(realFrameRate) : 'Unavailable'),
+      ),
+      createElement(
+        'div',
+        null,
+        createElement('dt', null, 'Time base'),
+        createElement('dd', null, timeBase ? formatRational(timeBase) : 'Unavailable'),
+      ),
+      createElement(
+        'div',
+        null,
+        createElement('dt', null, 'Rotation'),
+        createElement(
+          'dd',
+          null,
+          media.primaryVideo.rotationDegrees === undefined
+            ? 'Unavailable'
+            : `${media.primaryVideo.rotationDegrees}°`,
+        ),
       ),
       createElement(
         'div',
         null,
         createElement('dt', null, 'Audio'),
-        createElement('dd', null, media.primaryAudio.codecName),
+        createElement('dd', null, audioDetails.join(' · ')),
       ),
       createElement(
         'div',
         null,
         createElement('dt', null, 'Container'),
         createElement('dd', null, media.formatNames.join(', ')),
+      ),
+      createElement(
+        'div',
+        { className: 'summary-warnings' },
+        createElement('dt', null, 'Warnings'),
+        createElement(
+          'dd',
+          null,
+          media.warnings.length === 0
+            ? 'None'
+            : createElement(
+                'ul',
+                { className: 'warning-list' },
+                media.warnings.map((warning) => createElement('li', { key: warning }, warning)),
+              ),
+        ),
       ),
     ),
   );
@@ -230,7 +290,7 @@ export function IngestScreen({ actions, state }: IngestScreenProps): React.JSX.E
   if (error && !busy) {
     controls.unshift(
       createElement(ActionButton, {
-        children: retryLabel(error),
+        children: retryLabel(error, state.retryTarget),
         describedBy: 'ingest-error',
         key: 'retry',
         onClick: actions.retry,

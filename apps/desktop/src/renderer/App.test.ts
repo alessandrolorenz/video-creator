@@ -19,6 +19,9 @@ const media = {
     codedWidth: 1920,
     codedHeight: 1080,
     averageFrameRate: { numerator: 30_000, denominator: 1_001 },
+    realFrameRate: { numerator: 24, denominator: 1 },
+    timeBase: { numerator: 1, denominator: 90_000 },
+    rotationDegrees: 90,
   },
   primaryAudio: {
     streamIndex: 1,
@@ -26,7 +29,12 @@ const media = {
     sampleRate: 48_000,
     channelCount: 2,
   },
-  warnings: [],
+  warnings: [
+    'DURATION_FALLBACK_USED',
+    'VARIABLE_FRAME_RATE_SUSPECTED',
+    'RATE_METADATA_MISSING',
+    'ROTATION_METADATA_PRESENT',
+  ] as const,
 };
 
 const transcript = {
@@ -106,7 +114,16 @@ describe('renderer ingest screen', () => {
     expect(output).toContain('interview.mp4');
     expect(output).toContain('01:01:01.000001');
     expect(output).toContain('30000/1001');
+    expect(output).toContain('24/1');
+    expect(output).toContain('1/90000');
+    expect(output).toContain('90°');
     expect(output).toContain('1920 × 1080');
+    expect(output).toContain('48000 Hz');
+    expect(output).toContain('2 channels');
+    expect(output).toContain('DURATION_FALLBACK_USED');
+    expect(output).toContain('VARIABLE_FRAME_RATE_SUSPECTED');
+    expect(output).toContain('RATE_METADATA_MISSING');
+    expect(output).toContain('ROTATION_METADATA_PRESENT');
     expect(output).toContain('pt-BR');
     expect(output).toContain('42 entries');
     expect(output).toContain('Replace video');
@@ -133,6 +150,20 @@ describe('renderer ingest screen', () => {
     expect(output).toContain('aria-describedby="ingest-error"');
     expect(output).toContain('Retry transcript');
     expect(output).toContain('interview.mp4');
+  });
+
+  it('routes a transcript file-selection failure back to transcript retry', () => {
+    const output = markup({
+      snapshot: { contractVersion: 1, state: 'media-ready', media },
+      operationError: {
+        code: 'FILE_UNAVAILABLE',
+        message: 'The selected transcript is unavailable.',
+      },
+      retryTarget: 'transcript',
+    });
+
+    expect(output).toContain('Retry transcript');
+    expect(output).not.toContain('Retry video');
   });
 
   it('renders cancellation and prerequisite feedback in a polite live region', () => {

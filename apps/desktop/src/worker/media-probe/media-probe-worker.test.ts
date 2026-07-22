@@ -135,6 +135,21 @@ describe('media-probe worker controller', () => {
     expect(signal.aborted).toBe(true);
   });
 
+  it('ignores a well-formed late cancellation after the job is already terminal', async () => {
+    const port = new FakePort();
+    const work = deferred<Awaited<ReturnType<MediaProbeRunner['probe']>>>();
+    const runner: MediaProbeRunner = { probe: vi.fn(() => work.promise) };
+    createMediaProbeWorker({ port, runner, onShutdown: vi.fn() });
+    port.send(configure);
+    port.send(probe);
+    work.resolve({ result: { status: 'cancelled', jobId: 'job-1' as never } });
+    await vi.waitFor(() => expect(port.messages).toHaveLength(3));
+
+    port.send({ contractVersion: 1, type: 'cancel', jobId: 'job-1' });
+
+    expect(port.messages).toHaveLength(3);
+  });
+
   it.each(['shutdown', 'disconnect'] as const)(
     'aborts active work, suppresses late results, and cleans up on %s',
     async (event) => {

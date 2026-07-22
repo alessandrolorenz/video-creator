@@ -55,6 +55,15 @@ function harness(overrides: Partial<Parameters<typeof runBoundedProcess>[0]> = {
   return { abortController, child, clock, requests, result };
 }
 
+async function expectPending(result: Promise<unknown>): Promise<void> {
+  let settled = false;
+  void result.then(() => {
+    settled = true;
+  });
+  await Promise.resolve();
+  expect(settled).toBe(false);
+}
+
 describe('bounded child-process execution', () => {
   it('spawns with an argument array, no shell, ignored stdin, and separate pipes', async () => {
     const test = harness();
@@ -80,10 +89,11 @@ describe('bounded child-process execution', () => {
   ] as const)('latches a %s cap breach before killing', async (stream, expected) => {
     const test = harness();
     test.child[stream].emit('data', Buffer.from('12345'));
+    await expectPending(test.result);
+    expect(test.child.kill).toHaveBeenCalledTimes(1);
     test.child.emit('close', 0, null);
 
     await expect(test.result).resolves.toEqual({ status: 'output-limit', stream: expected });
-    expect(test.child.kill).toHaveBeenCalledTimes(1);
   });
 
   it('allows output exactly at each cap', async () => {
@@ -98,17 +108,19 @@ describe('bounded child-process execution', () => {
     const test = harness();
     test.clock.fire();
     test.child.emit('error', Object.assign(new Error('/secret'), { code: 'ENOENT' }));
+    await expectPending(test.result);
+    expect(test.child.kill).toHaveBeenCalledTimes(1);
     test.child.emit('close', 0, null);
     await expect(test.result).resolves.toEqual({ status: 'timeout' });
-    expect(test.child.kill).toHaveBeenCalledTimes(1);
   });
 
   it('latches cancellation before kill and ignores a late success', async () => {
     const test = harness();
     test.abortController.abort();
+    await expectPending(test.result);
+    expect(test.child.kill).toHaveBeenCalledTimes(1);
     test.child.emit('close', 0, null);
     await expect(test.result).resolves.toEqual({ status: 'cancelled' });
-    expect(test.child.kill).toHaveBeenCalledTimes(1);
   });
 
   it('does not let a cleanup kill failure replace the terminal result', async () => {
@@ -117,6 +129,8 @@ describe('bounded child-process execution', () => {
       throw new Error('late cleanup failure');
     });
     test.clock.fire();
+    await expectPending(test.result);
+    test.child.emit('close', 0, null);
     await expect(test.result).resolves.toEqual({ status: 'timeout' });
   });
 

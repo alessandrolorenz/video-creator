@@ -71,8 +71,13 @@ async function run() {
     );
     await new Promise((resolve) => setTimeout(resolve, 100));
     const cancellationAccepted = goodClient.cancel('job-cancel');
+    const replacementPromise = goodClient.probe(
+      probeRequest('job-replacement', 'asset-replacement', successfulMedia, 'replacement.mov'),
+    );
     const cancellation = await cancellationPromise;
     debug('cancellation-completed');
+    const replacement = await replacementPromise;
+    debug('replacement-completed');
 
     const incompatibleClient = new MediaProbeClient({ factory, executable: badExecutable });
     const incompatible = await incompatibleClient.probe(
@@ -90,6 +95,7 @@ async function run() {
         ...safeOutcome(cancellation),
         accepted: cancellationAccepted,
       }),
+      replacement: safeOutcome(replacement),
       shutdown: 'completed',
     });
     process.stdout.write(`CP5_RESULT:${JSON.stringify(result)}\n`);

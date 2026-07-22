@@ -318,6 +318,7 @@ export class MediaProbeClient {
   #state: ClientState = 'configuring';
   #transport: UtilityProcessTransport | undefined;
   #pending: PendingProbe | undefined;
+  #cancelledJobId: JobId | undefined;
   #removeMessageListener: (() => void) | undefined;
   #removeExitListener: (() => void) | undefined;
 
@@ -358,12 +359,16 @@ export class MediaProbeClient {
 
   cancel(jobId: JobId): boolean {
     if (!this.#pending || this.#pending.request.job.jobId !== jobId) return false;
+    const wasSent = this.#pending.sent;
+    if (wasSent) this.#cancelledJobId = jobId;
+    this.#settle(Object.freeze({ result: Object.freeze({ status: 'cancelled', jobId }) }));
+    if (!wasSent) return true;
     try {
       this.#transport?.postMessage({ contractVersion: 1, type: 'cancel', jobId });
       return true;
     } catch {
       this.#markUnavailable();
-      return false;
+      return true;
     }
   }
 
@@ -378,6 +383,7 @@ export class MediaProbeClient {
         }),
       );
     }
+    this.#cancelledJobId = undefined;
     try {
       this.#transport?.postMessage({ contractVersion: 1, type: 'shutdown' });
     } catch {
@@ -388,7 +394,7 @@ export class MediaProbeClient {
 
   #sendPendingProbe(): void {
     const pending = this.#pending;
-    if (!pending || pending.sent || !this.#transport) return;
+    if (!pending || pending.sent || !this.#transport || this.#cancelledJobId !== undefined) return;
     pending.sent = true;
     try {
       this.#transport.postMessage({
@@ -435,6 +441,16 @@ export class MediaProbeClient {
       this.#sendPendingProbe();
       return;
     }
+    if (
+      (message.type === 'accepted' || message.type === 'result') &&
+      message.jobId === this.#cancelledJobId
+    ) {
+      if (message.type === 'result') {
+        this.#cancelledJobId = undefined;
+        this.#sendPendingProbe();
+      }
+      return;
+    }
     const pending = this.#pending;
     if (!pending) return;
     if (message.type === 'protocol-error') {
@@ -469,6 +485,7 @@ export class MediaProbeClient {
   #markUnavailable(): void {
     if (this.#state === 'closed' || this.#state === 'unavailable') return;
     this.#state = 'unavailable';
+    this.#cancelledJobId = undefined;
     const pending = this.#pending;
     if (pending) {
       this.#settle(

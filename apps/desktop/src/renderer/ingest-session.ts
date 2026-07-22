@@ -16,6 +16,7 @@ export interface RendererIngestUiState {
   readonly pendingAction?: 'choosing-media' | 'choosing-transcript';
   readonly notice?: string;
   readonly operationError?: RendererIngestErrorV1;
+  readonly retryTarget?: 'media' | 'transcript';
 }
 
 type StateListener = (state: RendererIngestUiState) => void;
@@ -78,7 +79,11 @@ export class IngestSession {
   async chooseMedia(): Promise<void> {
     if (this.#disposed || isActive(this.#state.snapshot)) return;
     this.#setState({ snapshot: this.#state.snapshot, pendingAction: 'choosing-media' });
-    await this.#handleChoice(await this.#bridge.chooseMediaAsset(), 'Video selection cancelled.');
+    await this.#handleChoice(
+      await this.#bridge.chooseMediaAsset(),
+      'Video selection cancelled.',
+      'media',
+    );
   }
 
   async chooseTranscript(): Promise<void> {
@@ -98,6 +103,7 @@ export class IngestSession {
     await this.#handleChoice(
       await this.#bridge.chooseTimedTranscript(asset.assetId),
       'Transcript selection cancelled.',
+      'transcript',
     );
   }
 
@@ -126,7 +132,10 @@ export class IngestSession {
 
   async retry(): Promise<void> {
     const error = this.#state.operationError ?? this.#state.snapshot.error;
-    if (transcriptError(error) && this.#state.snapshot.media) {
+    if (
+      (this.#state.retryTarget === 'transcript' || transcriptError(error)) &&
+      this.#state.snapshot.media
+    ) {
       await this.chooseTranscript();
       return;
     }
@@ -140,10 +149,18 @@ export class IngestSession {
     this.#listeners.clear();
   }
 
-  async #handleChoice(response: ChooseOperationResponseV1, cancelledNotice: string): Promise<void> {
+  async #handleChoice(
+    response: ChooseOperationResponseV1,
+    cancelledNotice: string,
+    retryTarget: 'media' | 'transcript',
+  ): Promise<void> {
     if (this.#disposed) return;
     if (!response.ok) {
-      this.#setState({ snapshot: this.#state.snapshot, operationError: response.error });
+      this.#setState({
+        snapshot: this.#state.snapshot,
+        operationError: response.error,
+        retryTarget,
+      });
       return;
     }
     if (response.value.status === 'cancelled') {

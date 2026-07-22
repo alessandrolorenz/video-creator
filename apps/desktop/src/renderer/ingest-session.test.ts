@@ -180,4 +180,41 @@ describe('renderer ingest session', () => {
 
     expect(api.chooseTimedTranscript).toHaveBeenCalledWith(retainedAssetId);
   });
+
+  it('retries transcript file errors against retained media instead of reopening video', async () => {
+    const api = bridge();
+    const retainedAssetId = assetId('asset-retained');
+    vi.mocked(api.chooseTimedTranscript).mockResolvedValueOnce({
+      ok: false,
+      error: { code: 'FILE_UNAVAILABLE', message: 'The transcript file is unavailable.' },
+    });
+    const session = new IngestSession(api, new FakeScheduler(), {
+      contractVersion: 1,
+      state: 'media-ready',
+      media: {
+        schemaVersion: 1,
+        assetId: retainedAssetId,
+        displayName: 'clip.mp4',
+        byteSize: 1,
+        durationUs: timeUs(1),
+        formatNames: ['mp4'],
+        primaryVideo: {
+          streamIndex: 0,
+          codecName: 'h264',
+          codedWidth: 1,
+          codedHeight: 1,
+        },
+        primaryAudio: { streamIndex: 1, codecName: 'aac' },
+        warnings: [],
+      },
+    });
+
+    await session.chooseTranscript();
+    expect(session.getState().retryTarget).toBe('transcript');
+    await session.retry();
+
+    expect(api.chooseTimedTranscript).toHaveBeenCalledTimes(2);
+    expect(api.chooseTimedTranscript).toHaveBeenLastCalledWith(retainedAssetId);
+    expect(api.chooseMediaAsset).not.toHaveBeenCalled();
+  });
 });

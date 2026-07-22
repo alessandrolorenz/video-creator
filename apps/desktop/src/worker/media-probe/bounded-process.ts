@@ -90,60 +90,74 @@ export function runBoundedProcess(
     const stderrChunks: Uint8Array[] = [];
     let stdoutBytes = 0;
     let stderrBytes = 0;
-    let settled = false;
+    let completed = false;
+    let latchedTermination: BoundedProcessResult | undefined;
     const timer: { handle: unknown } = { handle: undefined };
 
     const cleanup = (): void => {
       options.signal.removeEventListener('abort', onAbort);
       child.stdout.removeListener('data', onStdout);
       child.stderr.removeListener('data', onStderr);
+      child.removeListener('error', onError);
       child.removeListener('close', onClose);
       if (timer.handle !== undefined) options.clock.clearTimeout(timer.handle);
     };
 
-    const finish = (result: BoundedProcessResult, terminate = false): void => {
-      if (settled) return;
-      settled = true;
+    const complete = (result: BoundedProcessResult): void => {
+      if (completed) return;
+      completed = true;
       cleanup();
       resolve(Object.freeze(result));
-      if (terminate) {
-        try {
-          child.kill();
-        } catch {
-          // A cleanup failure cannot replace the already-latched terminal result.
-        }
+    };
+
+    const latchAndTerminate = (result: BoundedProcessResult): void => {
+      if (completed || latchedTermination !== undefined) return;
+      latchedTermination = Object.freeze(result);
+      options.signal.removeEventListener('abort', onAbort);
+      child.stdout.removeListener('data', onStdout);
+      child.stderr.removeListener('data', onStderr);
+      if (timer.handle !== undefined) options.clock.clearTimeout(timer.handle);
+      try {
+        child.kill();
+      } catch {
+        // The latched result still waits for the process close event.
       }
     };
 
-    const onAbort = (): void => finish({ status: 'cancelled' }, true);
+    const onAbort = (): void => latchAndTerminate({ status: 'cancelled' });
     const onStdout = (chunk: Uint8Array): void => {
-      if (settled) return;
+      if (completed || latchedTermination !== undefined) return;
       stdoutBytes += chunk.byteLength;
       if (stdoutBytes > options.stdoutLimitBytes) {
-        finish({ status: 'output-limit', stream: 'stdout' }, true);
+        latchAndTerminate({ status: 'output-limit', stream: 'stdout' });
         return;
       }
       stdoutChunks.push(Uint8Array.from(chunk));
     };
     const onStderr = (chunk: Uint8Array): void => {
-      if (settled) return;
+      if (completed || latchedTermination !== undefined) return;
       stderrBytes += chunk.byteLength;
       if (stderrBytes > options.stderrLimitBytes) {
-        finish({ status: 'output-limit', stream: 'stderr' }, true);
+        latchAndTerminate({ status: 'output-limit', stream: 'stderr' });
         return;
       }
       stderrChunks.push(Uint8Array.from(chunk));
     };
     const onError = (error: unknown): void => {
+      if (latchedTermination !== undefined) return;
       const code = safeErrorCode(error);
-      finish({ status: 'spawn-error', ...(code === undefined ? {} : { code }) });
+      complete({ status: 'spawn-error', ...(code === undefined ? {} : { code }) });
     };
     const onClose = (exitCode: number | null, signal: string | null): void => {
-      if (signal !== null || exitCode === null) {
-        finish({ status: 'signalled' });
+      if (latchedTermination !== undefined) {
+        complete(latchedTermination);
         return;
       }
-      finish({
+      if (signal !== null || exitCode === null) {
+        complete({ status: 'signalled' });
+        return;
+      }
+      complete({
         status: 'closed',
         exitCode,
         stdout: concatenate(stdoutChunks, stdoutBytes),
@@ -156,7 +170,7 @@ export function runBoundedProcess(
     child.once('error', onError);
     child.once('close', onClose);
     timer.handle = options.clock.setTimeout(
-      () => finish({ status: 'timeout' }, true),
+      () => latchAndTerminate({ status: 'timeout' }),
       options.timeoutMs,
     );
     options.signal.addEventListener('abort', onAbort, { once: true });
