@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 5 Published — Local PASS; Hosted CI portability correction in progress**
+Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 5 Published — Hosted CI PASS; Checkpoint 6 Implemented Locally — PASS**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -48,18 +48,18 @@ pnpm test
 pnpm build
 ```
 
-Build and launch the neutral desktop foundation:
+Build and launch the desktop ingest screen:
 
 ```sh
 pnpm build
 pnpm --dir apps/desktop start
 ```
 
-The current screen reports only the secure repository-foundation status. Media import, transcript, timeline, AI, persistence, render, and export workflows are intentionally absent from M0.1.
+The current M1.0 screen accepts one video and one timed transcript through native dialogs, reports bounded validation progress, and shows only sanitized summaries. Passage selection, matching, timeline editing, preview, render, export, AI, persistence, and multi-asset workflows remain intentionally absent.
 
 ## Workspace map
 
-- [`apps/desktop`](apps/desktop) — Electron main with strict ingest IPC/lifecycle wiring, real bounded utility-process integration, sandboxed semantic preload, and foundation-only browser renderer.
+- [`apps/desktop`](apps/desktop) — Electron main with strict ingest IPC/lifecycle wiring, real bounded utility-process integration, sandboxed semantic preload, and the narrow M1.0 ingest/status renderer.
 - [`packages/domain`](packages/domain) — validated integer-microsecond time and source ranges.
 - [`packages/timeline`](packages/timeline) — empty versioned timeline foundation.
 - [`packages/media`](packages/media) — pure media/probe contracts and strict renderer-safe `ffprobe` JSON metadata parser.
@@ -99,7 +99,8 @@ The current screen reports only the secure repository-foundation status. Media i
 27. ~~Explicitly authorize publication of M1.0 Checkpoint 2 and, after hosted CI passes, authorize Checkpoint 3 — dedicated media-probe utility worker.~~ Completed 2026-07-22; CP2 hosted CI and CP3 local verification `PASS`.
 28. ~~Explicitly authorize publication of M1.0 Checkpoint 3 and, after hosted CI passes, authorize Checkpoint 4 — main-owned privileged adapters, utility client, and ingest controller.~~ Completed 2026-07-22; CP3 hosted CI and CP4 local verification `PASS`.
 29. ~~Explicitly authorize publication of M1.0 Checkpoint 4 and, after hosted CI passes, authorize Checkpoint 5 — strict IPC/preload surface, lifecycle wiring, and real Electron utility-process integration.~~ Completed 2026-07-22; CP4 hosted CI and CP5 local verification `PASS`.
-30. ~~Explicitly authorize publication of M1.0 Checkpoint 5 and, after hosted CI passes, authorize Checkpoint 6 — renderer ingest UX.~~ CP5 was published as `aa3bfbab15b427333616b621c2bd57283b1523d9`; its first hosted run exposed a Linux display-launch portability failure. CP6 is authorized but remains blocked until the corrected CP5 run is green. **Current gate.**
+30. ~~Explicitly authorize publication of M1.0 Checkpoint 5 and, after hosted CI passes, authorize Checkpoint 6 — renderer ingest UX.~~ Completed 2026-07-22; the Linux launcher issue was isolated and corrected, and hosted run [`29952857177`](https://github.com/alessandrolorenz/video-creator/actions/runs/29952857177) passed on exact commit `faa36e5787a11b19cecc11d39e37e25a78a8bd38`.
+31. Explicitly authorize publication of M1.0 Checkpoint 6 and the next gated step. **Current gate after local CP6 handoff.**
 
 ## Key documents
 
@@ -124,4 +125,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 4 were published with green hosted CI. Checkpoint 5 was implemented test-first, verified locally, and published as `aa3bfbab15b427333616b621c2bd57283b1523d9`. Its first hosted run failed only in the real Electron integration while 370 other tests passed; a Linux virtual-display portability correction is in progress. **Checkpoint 6 is authorized only after corrected CP5 hosted CI passes and remains blocked. External `ffprobe` installation/execution, CP6 publication, and all later work remain separately gated.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 5 are published with green hosted CI; the effective CP5 head is `faa36e5787a11b19cecc11d39e37e25a78a8bd38`. Checkpoint 6 was activated after that exact green gate, implemented test-first, and verified locally with a compiled Electron smoke that requires no real `ffprobe`. **Checkpoint 6 publication, Checkpoint 7, external `ffprobe` installation/execution, and all later work remain separately gated and unauthorized.**
