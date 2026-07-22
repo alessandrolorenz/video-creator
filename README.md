@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Independent Implementation Re-Judge Passed — Manual Smoke Authorization Pending**
+Status: **M0.1 Manual Smoke Passed — Freeze Authorization Pending**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -82,8 +82,8 @@ The current screen reports only the secure repository-foundation status. Media i
 11. ~~Authorize and execute Checkpoint 5 — clean-room automated evidence.~~ Completed 2026-07-21.
 12. ~~Authorize and run the independent implementation judge.~~ Completed 2026-07-21; verdict: `FAIL`.
 13. ~~Authorize the required README policy-link correction and independent re-judge.~~ Completed 2026-07-22; verdict: `PASS`.
-14. Authorize and complete the M0.1 manual smoke checklist. **Current gate.**
-15. Explicitly approve and freeze M0.1 after the smoke evidence passes.
+14. ~~Authorize and complete the M0.1 manual smoke checklist.~~ Completed 2026-07-22; verdict: `PASS`.
+15. Explicitly approve and freeze M0.1 after reviewing the final evidence. **Current gate.**
 16. Start M1.0 only after M0.1 is frozen.
 
 ## Key documents
@@ -103,4 +103,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–5 established the implementation and clean-room evidence. The first implementation judge found one missing README link; commit `9cec1cf` corrected it, hosted CI run `29918638581` passed, and a new independent judge returned `PASS`. **Manual smoke and M0.1 freeze remain separately gated and are not yet complete.**
+M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–5, the corrected hosted-CI candidate, the new independent implementation judge, and the manual smoke all passed. **M0.1 is not frozen until the product owner explicitly approves the final evidence and freeze.**
