@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Re-Judge Failed Narrowly — Amendment 002 Proposed**
+Status: **M0.1 Frozen — PASS; M1.0 Amendments 001/002 Approved — Final Plan Re-Judge Authorized**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -91,7 +91,8 @@ The current screen reports only the secure repository-foundation status. Media i
 20. ~~Authorize preparation of a specification amendment and corrected implementation plan addressing the judge findings.~~ Completed 2026-07-22.
 21. ~~Explicitly approve Amendment 001 and authorize an independent re-judge of the corrected plan.~~ Completed 2026-07-22.
 22. ~~Obtain and record the independent re-judge verdict on the exact corrected-plan SHA.~~ Completed 2026-07-22; verdict: `FAIL` with two narrow findings.
-23. Explicitly approve Amendment 002 and authorize another independent re-judge of the corrected plan. **Current gate.**
+23. ~~Explicitly approve Amendment 002 and authorize another independent re-judge of the corrected plan.~~ Completed 2026-07-22.
+24. Obtain and record the additional independent re-judge verdict on the exact final-plan SHA. **Current gate.**
 
 ## Key documents
 
@@ -106,7 +107,7 @@ The current screen reports only the secure repository-foundation status. Media i
 - `docs/specs/M0.1-repository-foundation-spec.md`
 - `docs/specs/M1.0-transcript-selected-cut-spec.md`
 - [M1.0 approved Amendment 001](docs/specs/M1.0-amendment-001-deterministic-ingest-results.md)
-- [M1.0 proposed Amendment 002](docs/specs/M1.0-amendment-002-duration-and-capability-cache.md)
+- [M1.0 approved Amendment 002](docs/specs/M1.0-amendment-002-duration-and-capability-cache.md)
 - [M1.0 repository audit](docs/specs/M1.0-repository-audit.md)
 - [M1.0 implementation plan](docs/specs/M1.0-implementation-plan.md)
 - `docs/prompts/M0.1-planning-prompt.md`
@@ -115,4 +116,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendment 001 remains normative. The independent re-judge confirmed the 30 result rows, four warnings, seven checkpoints, security, and scope, but returned `FAIL` on exact duration grammar and capability-cache/retry tests. Amendment 002 now proposes both narrow corrections. **Another judge, implementation, dependency changes, implementation-candidate publication, and external `ffprobe` installation remain unauthorized pending explicit gates.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are approved normative companions to the frozen M1.0 specification. Amendment 002 closes the two remaining duration/cache findings, and one additional independent re-judge is authorized. **Implementation, dependency changes, implementation-candidate publication, and external `ffprobe` installation remain unauthorized pending a passing verdict and separate checkpoint authorization.**
