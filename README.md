@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Implementation Judge — FAIL; CI Follow-up Verified Locally — Publication Pending**
+Status: **M0.1 Frozen — PASS; M1.0 Implementation Judge — FAIL; CI Follow-up Published — Hosted CI PASS; Handoff Evidence Pending**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Start here
@@ -159,7 +159,8 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 32. ~~Explicitly authorize publication of M1.0 Checkpoint 7 and, after hosted CI passes, authorize an independent implementation judge.~~ Completed 2026-07-22; CP7 hosted run [`29954962344`](https://github.com/alessandrolorenz/video-creator/actions/runs/29954962344) passed on exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`; the independent judge returned `FAIL` with three blocking findings.
 33. ~~Explicitly authorize and implement a narrow local correction for the implementation-judge findings.~~ Authorized and implemented 2026-07-22; focused verification passed, while the claimed complete local test pass was later retracted because no terminal summary had been observed.
 34. ~~Explicitly authorize and publish the judge-report and correction commits.~~ Completed 2026-07-22 at `d76155aa63427b8b55d2d7c769c28a5982bd49aa`; hosted run [`29960043463`](https://github.com/alessandrolorenz/video-creator/actions/runs/29960043463) failed because seven higher-level process fakes did not emit the newly required child `close` event.
-35. Correct the seven test harnesses, create the repository continuity setup, publish the follow-up, and require green hosted CI before the new independent judge. **Local implementation and all 398 tests pass; publication pending.**
+35. ~~Correct the seven test harnesses, create the repository continuity setup, publish the follow-up, and require green hosted CI.~~ Completed 2026-07-22; commit `8c8b85b7373a370049112387e2fcdbd5b7a722a6`, hosted run [`29961423406`](https://github.com/alessandrolorenz/video-creator/actions/runs/29961423406) `PASS`.
+36. Publish this documentary handoff evidence, require green hosted CI on the resulting exact HEAD, then run the authorized new independent implementation judge. **Current gate.**
 
 ## Key documents
 
@@ -190,4 +191,4 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 7 are published with green hosted CI; CP7 is exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`, hosted run `29954962344`. The independent implementation judge returned **FAIL** on subprocess close-wait, cancellation/replacement races, and missing renderer metadata/warnings. The correction was published at `d76155aa63427b8b55d2d7c769c28a5982bd49aa`, but hosted CI run `29960043463` exposed seven stale higher-level fakes that omitted the now-required child `close` event. The authorized harness/evidence/continuity follow-up now passes the complete local sequence: 35 files / 398 tests and build. Publication and green hosted CI remain required before the new judge. The local `videos-teste/` input directory remains ignored, private, and uninspected. **External `ffprobe`, real-input smoke, freeze, M1.1, and later work remain separately gated and unauthorized.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 7 are published with green hosted CI; CP7 is exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`, hosted run `29954962344`. The independent implementation judge returned **FAIL** on subprocess close-wait, cancellation/replacement races, and missing renderer metadata/warnings. The first correction CI failed seven stale higher-level fakes. Follow-up `8c8b85b7373a370049112387e2fcdbd5b7a722a6` now passes the complete local and hosted sequence: 35 files / 398 tests and build; hosted run `29961423406` is green. This handoff evidence must be published and green on its own exact HEAD before the authorized new judge starts. The local `videos-teste/` input directory remains ignored, private, and uninspected. **External `ffprobe`, real-input smoke, freeze, M1.1, and later work remain separately gated and unauthorized.**
