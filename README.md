@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 3 Implemented Locally — PASS; Checkpoint 4 Not Authorized**
+Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 3 Published — Hosted CI PASS; Checkpoint 4 Implemented Locally — PASS**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -59,7 +59,7 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Workspace map
 
-- [`apps/desktop`](apps/desktop) — Electron main, dedicated bounded media-probe utility worker, sandboxed preload, and browser-only React renderer.
+- [`apps/desktop`](apps/desktop) — Electron main with unwired privileged ingest adapters/client/controller, dedicated bounded media-probe utility worker, sandboxed preload, and browser-only React renderer.
 - [`packages/domain`](packages/domain) — validated integer-microsecond time and source ranges.
 - [`packages/timeline`](packages/timeline) — empty versioned timeline foundation.
 - [`packages/media`](packages/media) — pure media/probe contracts and strict renderer-safe `ffprobe` JSON metadata parser.
@@ -97,7 +97,8 @@ The current screen reports only the secure repository-foundation status. Media i
 25. ~~Explicitly authorize M1.0 Checkpoint 1 — pure IDs, transcript contract, and guard foundation.~~ Completed 2026-07-22; published commit `20ac90c1f1727fda2f72c71f7ebd8cb752dbacd1`, hosted CI `PASS`.
 26. ~~Explicitly authorize M1.0 Checkpoint 2 — pure media metadata and `ffprobe` output parser.~~ Completed 2026-07-22; local verification `PASS`.
 27. ~~Explicitly authorize publication of M1.0 Checkpoint 2 and, after hosted CI passes, authorize Checkpoint 3 — dedicated media-probe utility worker.~~ Completed 2026-07-22; CP2 hosted CI and CP3 local verification `PASS`.
-28. Explicitly authorize publication of M1.0 Checkpoint 3 and, after hosted CI passes, authorize Checkpoint 4 — main-owned privileged adapters, utility client, and ingest controller. **Current gate.**
+28. ~~Explicitly authorize publication of M1.0 Checkpoint 3 and, after hosted CI passes, authorize Checkpoint 4 — main-owned privileged adapters, utility client, and ingest controller.~~ Completed 2026-07-22; CP3 hosted CI and CP4 local verification `PASS`.
+29. Explicitly authorize publication of M1.0 Checkpoint 4 and, after hosted CI passes, authorize Checkpoint 5 — strict IPC/preload surface, lifecycle wiring, and real Electron utility-process integration. **Current gate.**
 
 ## Key documents
 
@@ -122,4 +123,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 and 2 were published with green hosted CI, and Checkpoint 3 was explicitly authorized, implemented test-first, and verified locally. **Checkpoint 3 publication, Checkpoint 4 and all later work, hosted CI for the CP3 candidate, real utility-process integration, and external `ffprobe` installation remain separately gated and unauthorized.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1, 2, and 3 were published with green hosted CI. Checkpoint 4 was activated only after the exact CP3 commit passed hosted CI, then implemented test-first and verified locally. **Checkpoint 4 publication, Checkpoint 5 and all later work, hosted CI for the CP4 candidate, real Electron utility-process integration, and external `ffprobe` installation/execution remain separately gated and unauthorized.**

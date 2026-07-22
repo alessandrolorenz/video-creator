@@ -47,6 +47,9 @@ importers:
       '@ai-video-assembly/media':
         specifier: workspace:*
         version: link:../../packages/media
+      '@ai-video-assembly/transcript':
+        specifier: workspace:*
+        version: link:../../packages/transcript
       react:
         specifier: 19.2.8
         version: 19.2.8
