@@ -298,7 +298,7 @@ async function checkSources(workspaces, errors, root) {
             errors.push(`${displayPath}: workspace dependency ${target.name} is not declared`);
           }
           if (
-            (workspace.directoryName === 'media' || workspace.directoryName === 'ai-contracts') &&
+            workspace.directoryName === 'ai-contracts' &&
             target.directoryName === 'domain' &&
             !importEdge.typeOnly
           ) {

@@ -76,7 +76,11 @@ importers:
 
   packages/export: {}
 
-  packages/media: {}
+  packages/media:
+    dependencies:
+      '@ai-video-assembly/domain':
+        specifier: workspace:*
+        version: link:../domain
 
   packages/timeline:
     dependencies:

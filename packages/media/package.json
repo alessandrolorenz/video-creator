@@ -6,6 +6,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "dependencies": {
+    "@ai-video-assembly/domain": "workspace:*"
+  },
   "scripts": {
     "build": "tsc6 -p tsconfig.build.json",
     "typecheck": "tsc6 --noEmit -p tsconfig.json"

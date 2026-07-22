@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 1 Implemented Locally — PASS; Checkpoint 2 Not Authorized**
+Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 2 Implemented Locally — PASS; Checkpoint 3 Not Authorized**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -62,7 +62,7 @@ The current screen reports only the secure repository-foundation status. Media i
 - [`apps/desktop`](apps/desktop) — Electron main, sandboxed preload, and browser-only React renderer.
 - [`packages/domain`](packages/domain) — validated integer-microsecond time and source ranges.
 - [`packages/timeline`](packages/timeline) — empty versioned timeline foundation.
-- [`packages/media`](packages/media) — worker job/cancellation interfaces only.
+- [`packages/media`](packages/media) — pure media/probe contracts and strict renderer-safe `ffprobe` JSON metadata parser.
 - [`packages/transcript`](packages/transcript) — strict provider-neutral timed-transcript V1 parser and immutable canonical document.
 - [`packages/ai-contracts`](packages/ai-contracts) — provider-neutral AI interfaces only.
 - [`packages/export`](packages/export) — reserved empty workspace boundary.
@@ -94,8 +94,9 @@ The current screen reports only the secure repository-foundation status. Media i
 22. ~~Obtain and record the independent re-judge verdict on the exact corrected-plan SHA.~~ Completed 2026-07-22; verdict: `FAIL` with two narrow findings.
 23. ~~Explicitly approve Amendment 002 and authorize another independent re-judge of the corrected plan.~~ Completed 2026-07-22.
 24. ~~Obtain and record the additional independent re-judge verdict on the exact final-plan SHA.~~ Completed 2026-07-22; verdict: `PASS WITH NOTES`, no blockers.
-25. ~~Explicitly authorize M1.0 Checkpoint 1 — pure IDs, transcript contract, and guard foundation.~~ Completed 2026-07-22; local verification `PASS`.
-26. Explicitly authorize M1.0 Checkpoint 2 — pure media metadata and `ffprobe` output parser. **Current gate.**
+25. ~~Explicitly authorize M1.0 Checkpoint 1 — pure IDs, transcript contract, and guard foundation.~~ Completed 2026-07-22; published commit `20ac90c1f1727fda2f72c71f7ebd8cb752dbacd1`, hosted CI `PASS`.
+26. ~~Explicitly authorize M1.0 Checkpoint 2 — pure media metadata and `ffprobe` output parser.~~ Completed 2026-07-22; local verification `PASS`.
+27. Explicitly authorize publication of M1.0 Checkpoint 2 and, after hosted CI passes, authorize Checkpoint 3 — dedicated media-probe utility worker. **Current gate.**
 
 ## Key documents
 
@@ -120,4 +121,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoint 1 was explicitly authorized, implemented test-first, and verified locally. **Checkpoint 2 and all later work, implementation-candidate publication, hosted CI for the candidate, and external `ffprobe` installation remain separately gated and unauthorized.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoint 1 was published with green hosted CI, and Checkpoint 2 was explicitly authorized, implemented test-first, and verified locally. **Checkpoint 2 publication, Checkpoint 3 and all later work, hosted CI for the CP2 candidate, and external `ffprobe` installation remain separately gated and unauthorized.**

@@ -161,22 +161,30 @@ describe('repository boundary guard', () => {
     );
   });
 
-  it('allows media to import domain types but rejects runtime imports', async () => {
+  it('allows media to use its declared domain dependency at runtime', async () => {
     const root = repository();
     write(
       root,
       'packages/media/src/index.ts',
-      "import type { TimeUs } from '@ai-video-assembly/domain';\nexport type { TimeUs };\n",
+      "import { timeUs } from '@ai-video-assembly/domain';\nexport const value = timeUs(1);\n",
     );
     expect(await checkRepository(root)).toEqual([]);
+  });
 
+  it('keeps AI contracts limited to domain type-only imports', async () => {
+    const root = repository();
     write(
       root,
-      'packages/media/src/index.ts',
+      'packages/ai-contracts/package.json',
+      '{"name":"@ai-video-assembly/ai-contracts","private":true,"type":"module","dependencies":{"@ai-video-assembly/domain":"workspace:*"}}',
+    );
+    write(
+      root,
+      'packages/ai-contracts/src/index.ts',
       "import { timeUs } from '@ai-video-assembly/domain';\nvoid timeUs;\n",
     );
     expect((await checkRepository(root)).join('\n')).toContain(
-      'media may import domain types only',
+      'ai-contracts may import domain types only',
     );
   });
 
