@@ -13,6 +13,20 @@ const tsc = resolve(repositoryRoot, 'node_modules/.bin/tsc6');
 const electron = createRequire(import.meta.url)('electron') as string;
 const temporaryRoots: string[] = [];
 
+function sanitizedStderrPreview(stderr: string, temporaryRoot: string): string {
+  return stderr
+    .replaceAll(temporaryRoot, '<temporary-root>')
+    .replaceAll(repositoryRoot, '<repository-root>')
+    .split(/\r?\n/u)
+    .map((line) =>
+      line.replace(/(^|[\s("'=])\/(?:[^\s"'():]+\/)*[^\s"'():]*/gu, '$1<absolute-path>'),
+    )
+    .filter((line) => line.length > 0)
+    .slice(0, 12)
+    .join(' | ')
+    .slice(0, 1_500);
+}
+
 const validProbeJson = JSON.stringify({
   streams: [
     {
@@ -111,6 +125,7 @@ describe('real Electron utility-process integration', () => {
       signal: execution.signal,
       errorCode: (execution.error as NodeJS.ErrnoException | undefined)?.code,
       stderr: execution.stderr.length === 0 ? 'empty' : 'present',
+      stderrPreview: sanitizedStderrPreview(execution.stderr, root),
       debugStages: execution.stderr
         .split(/\r?\n/u)
         .filter((line) => /^CP5_DEBUG:[a-z-]+$/u.test(line)),

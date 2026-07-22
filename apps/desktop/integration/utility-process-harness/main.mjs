@@ -47,8 +47,14 @@ async function run() {
     process.argv.slice(2);
 
   try {
-    const factory = createElectronUtilityProcessFactoryV1(workerPath, (modulePath, args, options) =>
-      utilityProcess.fork(modulePath, args, options),
+    const factory = createElectronUtilityProcessFactoryV1(
+      workerPath,
+      (modulePath, args, options) => {
+        debug('fork-start');
+        const child = utilityProcess.fork(modulePath, args, options);
+        debug('fork-completed');
+        return child;
+      },
     );
     const goodClient = new MediaProbeClient({ factory, executable: goodExecutable });
     debug('good-client-created');
