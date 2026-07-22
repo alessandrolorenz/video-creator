@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Gate 4 Passed With Notes — Checkpoint 1 Ready**
+Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 1 Implemented Locally — PASS; Checkpoint 2 Not Authorized**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -63,6 +63,7 @@ The current screen reports only the secure repository-foundation status. Media i
 - [`packages/domain`](packages/domain) — validated integer-microsecond time and source ranges.
 - [`packages/timeline`](packages/timeline) — empty versioned timeline foundation.
 - [`packages/media`](packages/media) — worker job/cancellation interfaces only.
+- [`packages/transcript`](packages/transcript) — strict provider-neutral timed-transcript V1 parser and immutable canonical document.
 - [`packages/ai-contracts`](packages/ai-contracts) — provider-neutral AI interfaces only.
 - [`packages/export`](packages/export) — reserved empty workspace boundary.
 - [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — frozen install and complete verification sequence.
@@ -93,7 +94,8 @@ The current screen reports only the secure repository-foundation status. Media i
 22. ~~Obtain and record the independent re-judge verdict on the exact corrected-plan SHA.~~ Completed 2026-07-22; verdict: `FAIL` with two narrow findings.
 23. ~~Explicitly approve Amendment 002 and authorize another independent re-judge of the corrected plan.~~ Completed 2026-07-22.
 24. ~~Obtain and record the additional independent re-judge verdict on the exact final-plan SHA.~~ Completed 2026-07-22; verdict: `PASS WITH NOTES`, no blockers.
-25. Explicitly authorize M1.0 Checkpoint 1 — pure IDs, transcript contract, and guard foundation. **Current gate.**
+25. ~~Explicitly authorize M1.0 Checkpoint 1 — pure IDs, transcript contract, and guard foundation.~~ Completed 2026-07-22; local verification `PASS`.
+26. Explicitly authorize M1.0 Checkpoint 2 — pure media metadata and `ffprobe` output parser. **Current gate.**
 
 ## Key documents
 
@@ -118,4 +120,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative. The final independent Gate 4 judge returned `PASS WITH NOTES` on the exact final-plan SHA, with no blockers, no scope creep, and no additional judge required. **Checkpoint 1 is ready but remains unauthorized; later checkpoints, implementation-candidate publication, and external `ffprobe` installation also remain separately gated.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoint 1 was explicitly authorized, implemented test-first, and verified locally. **Checkpoint 2 and all later work, implementation-candidate publication, hosted CI for the candidate, and external `ffprobe` installation remain separately gated and unauthorized.**

@@ -84,6 +84,12 @@ importers:
         specifier: workspace:*
         version: link:../domain
 
+  packages/transcript:
+    dependencies:
+      '@ai-video-assembly/domain':
+        specifier: workspace:*
+        version: link:../domain
+
 packages:
 
   '@babel/code-frame@7.29.7':

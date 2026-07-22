@@ -42,6 +42,11 @@ function repository(): string {
     '{"name":"@ai-video-assembly/export","private":true,"type":"module"}',
   );
   write(root, 'packages/export/src/index.ts', 'export {};\n');
+  write(
+    root,
+    'apps/desktop/package.json',
+    '{"name":"@ai-video-assembly/desktop","private":true,"type":"module"}',
+  );
   return root;
 }
 
@@ -50,7 +55,7 @@ afterEach(() => {
 });
 
 describe('repository boundary guard', () => {
-  it('accepts the real Checkpoint 2 repository', async () => {
+  it('accepts the real M1.0 Checkpoint 1 repository', async () => {
     expect(await checkRepository(join(import.meta.dirname, '../..'))).toEqual([]);
   });
 
@@ -80,6 +85,40 @@ describe('repository boundary guard', () => {
     write(root, 'packages/timeline/src/index.ts', "import '@ai-video-assembly/domain';\n");
 
     expect(await checkRepository(root)).toEqual([]);
+  });
+
+  it('allows transcript to use its declared domain dependency at runtime', async () => {
+    const root = repository();
+    write(
+      root,
+      'packages/transcript/package.json',
+      '{"name":"@ai-video-assembly/transcript","private":true,"type":"module","dependencies":{"@ai-video-assembly/domain":"workspace:*"}}',
+    );
+    write(
+      root,
+      'packages/transcript/src/index.ts',
+      "import { timeUs } from '@ai-video-assembly/domain';\nexport const value = timeUs(1);\n",
+    );
+
+    expect(await checkRepository(root)).toEqual([]);
+  });
+
+  it('rejects an undeclared transcript workspace dependency', async () => {
+    const root = repository();
+    write(
+      root,
+      'packages/transcript/package.json',
+      '{"name":"@ai-video-assembly/transcript","private":true,"type":"module"}',
+    );
+    write(
+      root,
+      'packages/transcript/src/index.ts',
+      "import { timeUs } from '@ai-video-assembly/domain';\nvoid timeUs;\n",
+    );
+
+    expect((await checkRepository(root)).join('\n')).toContain(
+      'workspace dependency @ai-video-assembly/domain is not declared',
+    );
   });
 
   it('rejects an undeclared workspace dependency', async () => {
@@ -118,7 +157,7 @@ describe('repository boundary guard', () => {
     );
 
     expect((await checkRepository(root)).join('\n')).toContain(
-      'package.json: forbidden M0.1 dependency openai',
+      'package.json: forbidden repository dependency openai',
     );
   });
 
@@ -153,14 +192,78 @@ describe('repository boundary guard', () => {
     },
   );
 
+  it.each(['node:fs', 'electron', 'react'])(
+    'rejects forbidden %s imports from transcript',
+    async (specifier) => {
+      const root = repository();
+      write(
+        root,
+        'packages/transcript/package.json',
+        '{"name":"@ai-video-assembly/transcript","private":true,"type":"module"}',
+      );
+      write(root, 'packages/transcript/src/index.ts', `import '${specifier}';\n`);
+
+      expect((await checkRepository(root)).join('\n')).toContain(
+        `framework-independent package imports forbidden ${specifier}`,
+      );
+    },
+  );
+
+  it('rejects the process global from transcript', async () => {
+    const root = repository();
+    write(
+      root,
+      'packages/transcript/package.json',
+      '{"name":"@ai-video-assembly/transcript","private":true,"type":"module"}',
+    );
+    write(root, 'packages/transcript/src/index.ts', 'export const value = process.env.VALUE;\n');
+
+    expect((await checkRepository(root)).join('\n')).toContain(
+      'framework-independent package uses forbidden process global',
+    );
+  });
+
+  it.each(['main-spoof', 'worker-copy', 'preload', 'renderer'])(
+    'rejects Node imports from non-privileged desktop directory %s',
+    async (directory) => {
+      const root = repository();
+      write(root, `apps/desktop/src/${directory}/index.ts`, "import 'node:fs';\n");
+
+      expect((await checkRepository(root)).join('\n')).toContain(
+        'desktop runtime source outside exact main/worker ownership imports forbidden node:fs',
+      );
+    },
+  );
+
+  it('allows Node imports in exact desktop main and worker ownership', async () => {
+    const root = repository();
+    write(root, 'apps/desktop/src/main/index.ts', "import 'node:path';\n");
+    write(root, 'apps/desktop/src/worker/index.ts', "import 'node:child_process';\n");
+
+    expect(await checkRepository(root)).toEqual([]);
+  });
+
+  it('rejects the process global outside exact desktop main/worker ownership', async () => {
+    const root = repository();
+    write(
+      root,
+      'apps/desktop/src/worker-copy/index.ts',
+      'export const value = process.env.VALUE;\n',
+    );
+
+    expect((await checkRepository(root)).join('\n')).toContain(
+      'desktop runtime source outside exact main/worker ownership uses forbidden process global',
+    );
+  });
+
   it('rejects binary fixtures and Git LFS configuration generated only in temp', async () => {
     const root = repository();
     write(root, 'sample.mp4', new Uint8Array([0, 1, 2, 3]));
     write(root, '.gitattributes', '*.mp4 filter=lfs diff=lfs merge=lfs -text\n');
 
     const errors = (await checkRepository(root)).join('\n');
-    expect(errors).toContain('binary fixture is forbidden in M0.1: sample.mp4');
-    expect(errors).toContain('Git LFS configuration is forbidden in M0.1');
+    expect(errors).toContain('binary fixture is forbidden by repository policy: sample.mp4');
+    expect(errors).toContain('Git LFS configuration is forbidden by repository policy');
   });
 
   it('rejects a Git LFS pointer even without a binary extension', async () => {
@@ -172,7 +275,7 @@ describe('repository boundary guard', () => {
     );
 
     expect((await checkRepository(root)).join('\n')).toContain(
-      'Git LFS pointer is forbidden in M0.1: fixture.data',
+      'Git LFS pointer is forbidden by repository policy: fixture.data',
     );
   });
 
@@ -181,7 +284,7 @@ describe('repository boundary guard', () => {
     write(root, 'fixture.data', new Uint8Array([65, 0, 66]));
 
     expect((await checkRepository(root)).join('\n')).toContain(
-      'binary content is forbidden in M0.1: fixture.data',
+      'binary content is forbidden by repository policy: fixture.data',
     );
   });
 

@@ -1,0 +1,16 @@
+{
+  "name": "@ai-video-assembly/transcript",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc6 -p tsconfig.build.json",
+    "typecheck": "tsc6 --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@ai-video-assembly/domain": "workspace:*"
+  }
+}

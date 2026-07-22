@@ -33,7 +33,14 @@ const BINARY_FIXTURE_EXTENSIONS = new Set([
   '.zip',
 ]);
 const IGNORED_DIRECTORIES = new Set(['.git', '.pnpm-store', 'coverage', 'dist', 'node_modules']);
-const FRAMEWORK_INDEPENDENT = new Set(['domain', 'timeline', 'media', 'ai-contracts', 'export']);
+const FRAMEWORK_INDEPENDENT = new Set([
+  'domain',
+  'timeline',
+  'media',
+  'transcript',
+  'ai-contracts',
+  'export',
+]);
 const NODE_MODULES = new Set(builtinModules.map((name) => name.replace(/^node:/, '')));
 const FORBIDDEN_FRAMEWORK_OR_PROVIDER_IMPORT =
   /^(?:electron|react(?:-dom)?|openai(?:\/|$)|@anthropic-ai\/|@google\/generative-ai|@ai-sdk\/|fluent-ffmpeg|ffmpeg(?:\/|$))/;
@@ -151,7 +158,9 @@ function declaredDependencies(manifest) {
 
 function isAllowedWorkspaceEdge(source, target) {
   if (source.directoryName === 'domain' || source.directoryName === 'export') return false;
-  if (source.directoryName === 'timeline') return target.directoryName === 'domain';
+  if (source.directoryName === 'timeline' || source.directoryName === 'transcript') {
+    return target.directoryName === 'domain';
+  }
   if (source.directoryName === 'media' || source.directoryName === 'ai-contracts') {
     return target.directoryName === 'domain';
   }
@@ -171,6 +180,16 @@ function exportPackageHasPublicSymbols(sourceFile) {
   });
 }
 
+function sourceUsesIdentifier(sourceFile, identifier) {
+  let found = false;
+  function visit(node) {
+    if (ts.isIdentifier(node) && node.text === identifier) found = true;
+    if (!found) ts.forEachChild(node, visit);
+  }
+  visit(sourceFile);
+  return found;
+}
+
 async function checkManifestDependencies(workspaces, errors, root) {
   for (const workspace of workspaces) {
     const groups = [
@@ -183,7 +202,7 @@ async function checkManifestDependencies(workspaces, errors, root) {
       for (const dependency of Object.keys(group ?? {})) {
         if (FORBIDDEN_DEPENDENCY.test(dependency)) {
           errors.push(
-            `${toPosix(relative(root, workspace.manifestPath))}: forbidden M0.1 dependency ${dependency}`,
+            `${toPosix(relative(root, workspace.manifestPath))}: forbidden repository dependency ${dependency}`,
           );
         }
         if (
@@ -220,17 +239,35 @@ async function checkSources(workspaces, errors, root) {
         errors.push(`${displayPath}: export package must not expose public symbols`);
       }
 
+      const isTestSource = /\.(?:test|spec)\.[cm]?[jt]sx?$/.test(path);
+      const isExactDesktopPrivilegedSource =
+        workspace.directoryName === 'desktop' &&
+        (isInside(path, join(workspace.root, 'src', 'main')) ||
+          isInside(path, join(workspace.root, 'src', 'worker')));
+      const usesProcess = sourceUsesIdentifier(sourceFile, 'process');
+      if (FRAMEWORK_INDEPENDENT.has(workspace.directoryName) && usesProcess) {
+        errors.push(`${displayPath}: framework-independent package uses forbidden process global`);
+      }
+      if (
+        workspace.directoryName === 'desktop' &&
+        usesProcess &&
+        !isTestSource &&
+        !isExactDesktopPrivilegedSource
+      ) {
+        errors.push(
+          `${displayPath}: desktop runtime source outside exact main/worker ownership uses forbidden process global`,
+        );
+      }
+
       for (const importEdge of imports) {
         const { specifier } = importEdge;
+        const rootSpecifier = specifier.replace(/^node:/, '').split('/')[0];
+        const isNodeImport = NODE_MODULES.has(rootSpecifier);
         if (workspace.directoryName === 'export') {
           errors.push(`${displayPath}: export package must not import ${specifier}`);
         }
         if (FRAMEWORK_INDEPENDENT.has(workspace.directoryName)) {
-          const rootSpecifier = specifier.replace(/^node:/, '').split('/')[0];
-          if (
-            NODE_MODULES.has(rootSpecifier) ||
-            FORBIDDEN_FRAMEWORK_OR_PROVIDER_IMPORT.test(specifier)
-          ) {
+          if (isNodeImport || FORBIDDEN_FRAMEWORK_OR_PROVIDER_IMPORT.test(specifier)) {
             errors.push(
               `${displayPath}: framework-independent package imports forbidden ${specifier}`,
             );
@@ -238,6 +275,16 @@ async function checkSources(workspaces, errors, root) {
           if (specifier.startsWith('apps/') || specifier.includes('/apps/')) {
             errors.push(`${displayPath}: framework-independent package imports application source`);
           }
+        }
+        if (
+          workspace.directoryName === 'desktop' &&
+          isNodeImport &&
+          !isTestSource &&
+          !isExactDesktopPrivilegedSource
+        ) {
+          errors.push(
+            `${displayPath}: desktop runtime source outside exact main/worker ownership imports forbidden ${specifier}`,
+          );
         }
 
         const target = workspaceForSpecifier(specifier, workspaces);
@@ -285,25 +332,25 @@ async function checkSources(workspaces, errors, root) {
 async function checkFixtures(root, errors) {
   const fixtureRoot = join(root, 'packages', 'fixtures');
   if (existsSync(fixtureRoot)) {
-    errors.push('packages/fixtures is forbidden in M0.1');
+    errors.push('packages/fixtures is forbidden by repository policy');
   }
 
   for (const path of await walk(root)) {
     const displayPath = toPosix(relative(root, path));
     if (BINARY_FIXTURE_EXTENSIONS.has(extname(path).toLowerCase())) {
-      errors.push(`binary fixture is forbidden in M0.1: ${displayPath}`);
+      errors.push(`binary fixture is forbidden by repository policy: ${displayPath}`);
     }
 
     const contents = await readFile(path);
     const prefix = contents.subarray(0, 200).toString('utf8');
     if (prefix.startsWith('version https://git-lfs.github.com/spec/v1\n')) {
-      errors.push(`Git LFS pointer is forbidden in M0.1: ${displayPath}`);
+      errors.push(`Git LFS pointer is forbidden by repository policy: ${displayPath}`);
     }
     if (displayPath === '.gitattributes' && /(?:^|\s)filter=lfs(?:\s|$)/m.test(prefix)) {
-      errors.push('Git LFS configuration is forbidden in M0.1');
+      errors.push('Git LFS configuration is forbidden by repository policy');
     }
     if (!BINARY_FIXTURE_EXTENSIONS.has(extname(path).toLowerCase()) && contents.includes(0)) {
-      errors.push(`binary content is forbidden in M0.1: ${displayPath}`);
+      errors.push(`binary content is forbidden by repository policy: ${displayPath}`);
     }
   }
 }

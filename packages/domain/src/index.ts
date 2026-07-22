@@ -1,4 +1,19 @@
 export {
+  assetId,
+  createAssetId,
+  createJobId,
+  createTranscriptDocumentId,
+  jobId,
+  OPAQUE_ID_MAX_LENGTH,
+  transcriptDocumentId,
+  type AssetId,
+  type JobId,
+  type OpaqueIdValidationError,
+  type OpaqueIdValidationErrorCode,
+  type OpaqueIdValidationResult,
+  type TranscriptDocumentId,
+} from './opaque-id.js';
+export {
   createSourceRange,
   containsSourceRange,
   durationUs,
