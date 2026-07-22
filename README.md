@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Manual Smoke Passed — Freeze Authorization Pending**
+Status: **M0.1 Frozen — PASS; M1.0 Not Authorized**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -83,8 +83,8 @@ The current screen reports only the secure repository-foundation status. Media i
 12. ~~Authorize and run the independent implementation judge.~~ Completed 2026-07-21; verdict: `FAIL`.
 13. ~~Authorize the required README policy-link correction and independent re-judge.~~ Completed 2026-07-22; verdict: `PASS`.
 14. ~~Authorize and complete the M0.1 manual smoke checklist.~~ Completed 2026-07-22; verdict: `PASS`.
-15. Explicitly approve and freeze M0.1 after reviewing the final evidence. **Current gate.**
-16. Start M1.0 only after M0.1 is frozen.
+15. ~~Explicitly approve and freeze M0.1 after reviewing the final evidence.~~ Completed 2026-07-22; verdict: `PASS`.
+16. Explicitly authorize the next M1.0 gate before any M1.0 work begins. **Current gate.**
 
 ## Key documents
 
@@ -100,7 +100,8 @@ The current screen reports only the secure repository-foundation status. Media i
 - `docs/specs/M1.0-transcript-selected-cut-spec.md`
 - `docs/prompts/M0.1-planning-prompt.md`
 - `docs/specs/M0.0-freeze-report.md`
+- [M0.1 freeze report](docs/specs/M0.1-freeze-report.md)
 
 ## Current authorization
 
-M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–5, the corrected hosted-CI candidate, the new independent implementation judge, and the manual smoke all passed. **M0.1 is not frozen until the product owner explicitly approves the final evidence and freeze.**
+M0.0 and M0.1 are approved and frozen. Checkpoints 0–5, the corrected hosted-CI candidate, the new independent implementation judge, and the manual smoke all passed. The frozen M0.1 implementation/evidence baseline is commit `76bfd5fdcc961902b6718a281d238ed8d9f8a49c`. **M1.0 remains unstarted and requires separate explicit authorization.**
