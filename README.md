@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Gate 3 Plan Prepared — Plan Judge Authorization Pending**
+Status: **M0.1 Frozen — PASS; M1.0 Gate 4 Plan Judge Failed — Amendment Authorization Pending**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -87,7 +87,8 @@ The current screen reports only the secure repository-foundation status. Media i
 16. ~~Explicitly authorize the next M1.0 planning gate.~~ Completed 2026-07-22; Gate 1 audit and corrected Gate 2 proposal prepared.
 17. ~~Explicitly approve and freeze the corrected M1.0 media-ingest specification.~~ Completed 2026-07-22.
 18. ~~Prepare the test-first M1.0 implementation plan and gate artifacts.~~ Completed 2026-07-22.
-19. Authorize an independent M1.0 plan judge. **Current gate.**
+19. ~~Authorize one independent M1.0 plan judge.~~ Completed 2026-07-22; verdict: `FAIL`.
+20. Authorize a specification amendment and corrected implementation plan addressing the judge findings. **Current gate.**
 
 ## Key documents
 
@@ -109,4 +110,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0, M0.1, and the corrected M1.0 media-ingest/timed-transcript specification are approved and frozen. The Gate 3 test-first implementation plan and downstream report/checklist scaffolds are prepared. **The M1.0 plan judge, implementation, dependency changes, implementation-candidate publication, and external `ffprobe` installation remain unauthorized.**
+M0.0 and M0.1 remain frozen. The M1.0 specification is frozen, but the independent Gate 4 plan judge returned `FAIL`; changing it now requires an explicit amendment. **The amendment/correction, re-judge, implementation, dependency changes, implementation-candidate publication, and external `ffprobe` installation remain unauthorized.**
