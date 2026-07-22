@@ -93,7 +93,7 @@ The current screen reports only the secure repository-foundation status. Media i
 - `docs/06-roadmap.md`
 - `docs/07-sdd-workflow-and-gates.md`
 - `docs/08-validation-and-judge-strategy.md`
-- `docs/fixture-policy.md`
+- [Fixture policy](docs/fixture-policy.md)
 - `docs/specs/M0.1-repository-foundation-spec.md`
 - `docs/specs/M1.0-transcript-selected-cut-spec.md`
 - `docs/prompts/M0.1-planning-prompt.md`
