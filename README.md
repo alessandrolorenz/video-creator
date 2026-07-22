@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Gate 1 Complete — Gate 2 Spec Approval Pending**
+Status: **M0.1 Frozen — PASS; M1.0 Gate 2 Spec Frozen — Gate 3 Planning Authorized**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -85,7 +85,8 @@ The current screen reports only the secure repository-foundation status. Media i
 14. ~~Authorize and complete the M0.1 manual smoke checklist.~~ Completed 2026-07-22; verdict: `PASS`.
 15. ~~Explicitly approve and freeze M0.1 after reviewing the final evidence.~~ Completed 2026-07-22; verdict: `PASS`.
 16. ~~Explicitly authorize the next M1.0 planning gate.~~ Completed 2026-07-22; Gate 1 audit and corrected Gate 2 proposal prepared.
-17. Explicitly approve and freeze the corrected M1.0 media-ingest specification. **Current gate.**
+17. ~~Explicitly approve and freeze the corrected M1.0 media-ingest specification.~~ Completed 2026-07-22.
+18. Prepare and review the test-first M1.0 implementation plan. **Current gate.**
 
 ## Key documents
 
@@ -106,4 +107,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0 and M0.1 are approved and frozen. The product owner authorized the next M1.0 planning gate; the repository audit is complete and a corrected media-ingest/timed-transcript specification is proposed. **The M1.0 spec is not approved or frozen, and no M1.0 implementation, dependency, or external-tool installation is authorized.**
+M0.0, M0.1, and the corrected M1.0 media-ingest/timed-transcript specification are approved and frozen. Gate 3 implementation planning is authorized. **The M1.0 plan judge, implementation, dependency changes, and external `ffprobe` installation remain unauthorized.**
