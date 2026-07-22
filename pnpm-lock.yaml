@@ -41,6 +41,12 @@ importers:
 
   apps/desktop:
     dependencies:
+      '@ai-video-assembly/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
+      '@ai-video-assembly/media':
+        specifier: workspace:*
+        version: link:../../packages/media
       react:
         specifier: 19.2.8
         version: 19.2.8

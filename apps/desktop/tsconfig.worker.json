@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist/worker",
+    "rootDir": "src/worker",
+    "types": ["node", "electron"]
+  },
+  "include": ["src/worker/**/*.ts"],
+  "exclude": ["src/**/*.test.ts"]
+}
