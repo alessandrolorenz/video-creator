@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Amendments 001/002 Approved — Final Plan Re-Judge Authorized**
+Status: **M0.1 Frozen — PASS; M1.0 Gate 4 Passed With Notes — Checkpoint 1 Ready**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -92,7 +92,8 @@ The current screen reports only the secure repository-foundation status. Media i
 21. ~~Explicitly approve Amendment 001 and authorize an independent re-judge of the corrected plan.~~ Completed 2026-07-22.
 22. ~~Obtain and record the independent re-judge verdict on the exact corrected-plan SHA.~~ Completed 2026-07-22; verdict: `FAIL` with two narrow findings.
 23. ~~Explicitly approve Amendment 002 and authorize another independent re-judge of the corrected plan.~~ Completed 2026-07-22.
-24. Obtain and record the additional independent re-judge verdict on the exact final-plan SHA. **Current gate.**
+24. ~~Obtain and record the additional independent re-judge verdict on the exact final-plan SHA.~~ Completed 2026-07-22; verdict: `PASS WITH NOTES`, no blockers.
+25. Explicitly authorize M1.0 Checkpoint 1 — pure IDs, transcript contract, and guard foundation. **Current gate.**
 
 ## Key documents
 
@@ -110,10 +111,11 @@ The current screen reports only the secure repository-foundation status. Media i
 - [M1.0 approved Amendment 002](docs/specs/M1.0-amendment-002-duration-and-capability-cache.md)
 - [M1.0 repository audit](docs/specs/M1.0-repository-audit.md)
 - [M1.0 implementation plan](docs/specs/M1.0-implementation-plan.md)
+- [M1.0 final plan-judge report](docs/specs/M1.0-final-plan-judge-report.md)
 - `docs/prompts/M0.1-planning-prompt.md`
 - `docs/specs/M0.0-freeze-report.md`
 - [M0.1 freeze report](docs/specs/M0.1-freeze-report.md)
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are approved normative companions to the frozen M1.0 specification. Amendment 002 closes the two remaining duration/cache findings, and one additional independent re-judge is authorized. **Implementation, dependency changes, implementation-candidate publication, and external `ffprobe` installation remain unauthorized pending a passing verdict and separate checkpoint authorization.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative. The final independent Gate 4 judge returned `PASS WITH NOTES` on the exact final-plan SHA, with no blockers, no scope creep, and no additional judge required. **Checkpoint 1 is ready but remains unauthorized; later checkpoints, implementation-candidate publication, and external `ffprobe` installation also remain separately gated.**
