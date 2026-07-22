@@ -2,7 +2,7 @@
 
 Status: Approved / Frozen — M0.0 (2026-07-21)
 
-Lifecycle note: M0.1 is frozen `PASS`. M1.0 implementation is complete but remains at its correction/verification gate after the first implementation judge and a failed correction CI. M1.1 has not started. See `docs/PROJECT-STATE.md` for live authorization and evidence; this frozen roadmap still defines milestone order and scope.
+Lifecycle note: M0.1 is frozen `PASS`. M1.0 implementation and correction are complete, and the independent re-judge returned `PASS WITH NOTES`; real-input manual smoke awaits separate authorization. M1.1 has not started. See `docs/PROJECT-STATE.md` for live authorization and evidence; this frozen roadmap still defines milestone order and scope.
 
 ## Release strategy
 
@@ -50,7 +50,7 @@ Exit gate: clean build, tests, lint/typecheck, secure renderer boundary, indepen
 - transcript normalization;
 - project persistence can remain file-based.
 
-Delivery state: implemented without persistence; correction follow-up and independent re-judge pending before manual smoke/freeze.
+Delivery state: implemented without persistence; independent re-judge `PASS WITH NOTES`; manual smoke/freeze pending.
 
 ### M1.1 — Text Selection Resolver
 
