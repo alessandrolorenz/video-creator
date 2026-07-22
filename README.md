@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Gate 2 Spec Frozen — Gate 3 Planning Authorized**
+Status: **M0.1 Frozen — PASS; M1.0 Gate 3 Plan Prepared — Plan Judge Authorization Pending**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -86,7 +86,8 @@ The current screen reports only the secure repository-foundation status. Media i
 15. ~~Explicitly approve and freeze M0.1 after reviewing the final evidence.~~ Completed 2026-07-22; verdict: `PASS`.
 16. ~~Explicitly authorize the next M1.0 planning gate.~~ Completed 2026-07-22; Gate 1 audit and corrected Gate 2 proposal prepared.
 17. ~~Explicitly approve and freeze the corrected M1.0 media-ingest specification.~~ Completed 2026-07-22.
-18. Prepare and review the test-first M1.0 implementation plan. **Current gate.**
+18. ~~Prepare the test-first M1.0 implementation plan and gate artifacts.~~ Completed 2026-07-22.
+19. Authorize an independent M1.0 plan judge. **Current gate.**
 
 ## Key documents
 
@@ -101,10 +102,11 @@ The current screen reports only the secure repository-foundation status. Media i
 - `docs/specs/M0.1-repository-foundation-spec.md`
 - `docs/specs/M1.0-transcript-selected-cut-spec.md`
 - [M1.0 repository audit](docs/specs/M1.0-repository-audit.md)
+- [M1.0 implementation plan](docs/specs/M1.0-implementation-plan.md)
 - `docs/prompts/M0.1-planning-prompt.md`
 - `docs/specs/M0.0-freeze-report.md`
 - [M0.1 freeze report](docs/specs/M0.1-freeze-report.md)
 
 ## Current authorization
 
-M0.0, M0.1, and the corrected M1.0 media-ingest/timed-transcript specification are approved and frozen. Gate 3 implementation planning is authorized. **The M1.0 plan judge, implementation, dependency changes, and external `ffprobe` installation remain unauthorized.**
+M0.0, M0.1, and the corrected M1.0 media-ingest/timed-transcript specification are approved and frozen. The Gate 3 test-first implementation plan and downstream report/checklist scaffolds are prepared. **The M1.0 plan judge, implementation, dependency changes, implementation-candidate publication, and external `ffprobe` installation remain unauthorized.**
