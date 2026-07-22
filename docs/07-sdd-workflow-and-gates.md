@@ -98,6 +98,19 @@ Each milestone normally contains:
 - `Mxx-manual-smoke-checklist.md`
 - `Mxx-freeze-report.md`
 
+## Continuity and handoff rule
+
+The repository must keep `docs/PROJECT-STATE.md` as the live operational handoff. At every authorization, failure, published CI result, judge verdict, smoke result, or freeze:
+
+- update the current gate, blockers, exact next action, and prohibited actions;
+- link the relevant SHA/run without rewriting an earlier historical verdict;
+- distinguish a focused/local pass from the complete authoritative sequence;
+- require terminal command output before recording `PASS`;
+- leave private ignored inputs uninspected and absent from evidence inventories;
+- direct the next developer or agent to verify Git and hosted CI rather than trusting stale prose.
+
+Frozen normative artifacts remain unchanged except for explicit amendments or non-normative lifecycle pointers.
+
 ## Change-control rule
 
 A frozen spec may only be changed through an explicit amendment documenting:

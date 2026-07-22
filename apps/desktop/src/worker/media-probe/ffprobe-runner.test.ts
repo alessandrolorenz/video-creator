@@ -69,6 +69,19 @@ function close(
   child.emit('close', exitCode, signal);
 }
 
+async function expectPending(result: Promise<unknown>): Promise<void> {
+  let settled = false;
+  void result.then(() => {
+    settled = true;
+  });
+  await Promise.resolve();
+  expect(settled).toBe(false);
+}
+
+function closeAfterTermination(child: FakeProcess): void {
+  close(child, '', null, 'SIGKILL');
+}
+
 async function passCapability(test: ReturnType<typeof harness>, executable = '/opt/ffprobe') {
   const pending = test.runner.checkCapability(executable, new AbortController().signal);
   close(test.spawnAdapter.children.at(-1)!, 'ffprobe version 7.1 Copyright\r\n');
@@ -191,6 +204,17 @@ describe('ffprobe capability check', () => {
       (test: ReturnType<typeof harness>) =>
         close(test.spawnAdapter.children[0]!, '', null, 'SIGKILL'),
     ],
+  ] as const)('maps %s to incompatible', async (_name, complete) => {
+    const test = harness();
+    const pending = test.runner.checkCapability('/tool', new AbortController().signal);
+    complete(test);
+    await expect(pending).resolves.toEqual({
+      status: 'failed',
+      code: 'FFPROBE_INCOMPATIBLE',
+    });
+  });
+
+  it.each([
     ['timeout', (test: ReturnType<typeof harness>) => test.clock.fireLatest()],
     [
       'stdout cap',
@@ -208,10 +232,13 @@ describe('ffprobe capability check', () => {
           Buffer.alloc(FFPROBE_VERSION_LIMIT_BYTES + 1),
         ),
     ],
-  ] as const)('maps %s to incompatible', async (_name, complete) => {
+  ] as const)('waits for close after %s before mapping to incompatible', async (_name, trigger) => {
     const test = harness();
     const pending = test.runner.checkCapability('/tool', new AbortController().signal);
-    complete(test);
+    trigger(test);
+    await expectPending(pending);
+    expect(test.spawnAdapter.children[0]!.kill).toHaveBeenCalledTimes(1);
+    closeAfterTermination(test.spawnAdapter.children[0]!);
     await expect(pending).resolves.toEqual({
       status: 'failed',
       code: 'FFPROBE_INCOMPATIBLE',
@@ -261,6 +288,8 @@ describe('capability cache', () => {
     const abortController = new AbortController();
     const cancelled = test.runner.checkCapability('/tool', abortController.signal);
     abortController.abort();
+    await expectPending(cancelled);
+    closeAfterTermination(test.spawnAdapter.children[0]!);
     await cancelled;
 
     const retry = test.runner.checkCapability('/tool', new AbortController().signal);
@@ -298,25 +327,6 @@ describe('media probe runner', () => {
   });
 
   it.each([
-    ['timeout', 'PROBE_TIMEOUT', (test: ReturnType<typeof harness>) => test.clock.fireLatest()],
-    [
-      'stdout limit',
-      'PROBE_OUTPUT_LIMIT',
-      (test: ReturnType<typeof harness>) =>
-        test.spawnAdapter.children[1]!.stdout.emit(
-          'data',
-          Buffer.alloc(FFPROBE_PROBE_STDOUT_LIMIT_BYTES + 1),
-        ),
-    ],
-    [
-      'stderr limit',
-      'PROBE_OUTPUT_LIMIT',
-      (test: ReturnType<typeof harness>) =>
-        test.spawnAdapter.children[1]!.stderr.emit(
-          'data',
-          Buffer.alloc(FFPROBE_PROBE_STDERR_LIMIT_BYTES + 1),
-        ),
-    ],
     [
       'nonzero',
       'MEDIA_UNSUPPORTED',
@@ -336,6 +346,41 @@ describe('media probe runner', () => {
     const outcome = await pending;
     expect(outcome.result).toMatchObject({ status: 'failed', error: { code } });
   });
+
+  it.each([
+    ['timeout', 'PROBE_TIMEOUT', (test: ReturnType<typeof harness>) => test.clock.fireLatest()],
+    [
+      'stdout limit',
+      'PROBE_OUTPUT_LIMIT',
+      (test: ReturnType<typeof harness>) =>
+        test.spawnAdapter.children[1]!.stdout.emit(
+          'data',
+          Buffer.alloc(FFPROBE_PROBE_STDOUT_LIMIT_BYTES + 1),
+        ),
+    ],
+    [
+      'stderr limit',
+      'PROBE_OUTPUT_LIMIT',
+      (test: ReturnType<typeof harness>) =>
+        test.spawnAdapter.children[1]!.stderr.emit(
+          'data',
+          Buffer.alloc(FFPROBE_PROBE_STDERR_LIMIT_BYTES + 1),
+        ),
+    ],
+  ] as const)(
+    'waits for close after probe %s before mapping to %s',
+    async (_name, code, trigger) => {
+      const test = harness();
+      await passCapability(test);
+      const { pending } = await startProbe(test);
+      trigger(test);
+      await expectPending(pending);
+      expect(test.spawnAdapter.children[1]!.kill).toHaveBeenCalledTimes(1);
+      closeAfterTermination(test.spawnAdapter.children[1]!);
+      const outcome = await pending;
+      expect(outcome.result).toMatchObject({ status: 'failed', error: { code } });
+    },
+  );
 
   it.each([
     ['ENOENT', 'FFPROBE_NOT_FOUND'],

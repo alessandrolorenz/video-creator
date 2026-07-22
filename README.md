@@ -1,7 +1,11 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Implementation Judge — FAIL; Narrow Correction Verified Locally — Publication Pending**
+Status: **M0.1 Frozen — PASS; M1.0 Implementation Judge — FAIL; CI Follow-up Verified Locally — Publication Pending**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
+
+## Start here
+
+Developers and automated agents should begin with the live [project state](docs/PROJECT-STATE.md), then use the [documentation map](docs/README.md), [contributor setup](CONTRIBUTING.md), and repository [agent instructions](AGENTS.md). Run `pnpm doctor` before changing the project; it performs read-only continuity checks and does not inspect private inputs or execute `ffprobe`.
 
 ## Purpose
 
@@ -153,11 +157,16 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 30. ~~Explicitly authorize publication of M1.0 Checkpoint 5 and, after hosted CI passes, authorize Checkpoint 6 — renderer ingest UX.~~ Completed 2026-07-22; the Linux launcher issue was isolated and corrected, and hosted run [`29952857177`](https://github.com/alessandrolorenz/video-creator/actions/runs/29952857177) passed on exact commit `faa36e5787a11b19cecc11d39e37e25a78a8bd38`.
 31. ~~Explicitly authorize publication of M1.0 Checkpoint 6 and, after hosted CI passes, authorize Checkpoint 7 — operational docs and clean-room evidence.~~ Completed 2026-07-22; CP6 hosted run [`29954096201`](https://github.com/alessandrolorenz/video-creator/actions/runs/29954096201) passed on exact commit `971ed19ff5ee1582aeb29b38a3c42434c949b660`, and CP7 clean-room verification passed locally.
 32. ~~Explicitly authorize publication of M1.0 Checkpoint 7 and, after hosted CI passes, authorize an independent implementation judge.~~ Completed 2026-07-22; CP7 hosted run [`29954962344`](https://github.com/alessandrolorenz/video-creator/actions/runs/29954962344) passed on exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`; the independent judge returned `FAIL` with three blocking findings.
-33. ~~Explicitly authorize and implement a narrow local correction for the implementation-judge findings.~~ Authorized, implemented, and authoritatively verified locally 2026-07-22.
-34. Explicitly authorize publication of the judge-report and correction commits and, only after hosted CI passes on the exact correction SHA, authorize a new independent implementation judge. **Next gate; not yet authorized.**
+33. ~~Explicitly authorize and implement a narrow local correction for the implementation-judge findings.~~ Authorized and implemented 2026-07-22; focused verification passed, while the claimed complete local test pass was later retracted because no terminal summary had been observed.
+34. ~~Explicitly authorize and publish the judge-report and correction commits.~~ Completed 2026-07-22 at `d76155aa63427b8b55d2d7c769c28a5982bd49aa`; hosted run [`29960043463`](https://github.com/alessandrolorenz/video-creator/actions/runs/29960043463) failed because seven higher-level process fakes did not emit the newly required child `close` event.
+35. Correct the seven test harnesses, create the repository continuity setup, publish the follow-up, and require green hosted CI before the new independent judge. **Local implementation and all 398 tests pass; publication pending.**
 
 ## Key documents
 
+- [Live project state and continuation handoff](docs/PROJECT-STATE.md)
+- [Documentation map](docs/README.md)
+- [Contributor setup](CONTRIBUTING.md)
+- [Agent instructions](AGENTS.md)
 - `docs/00-product-vision.md`
 - `docs/02-scope-and-non-goals.md`
 - `docs/03-architecture-decision.md`
@@ -181,4 +190,4 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 7 are published with green hosted CI; CP7 is exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`, hosted run `29954962344`. The independent implementation judge returned **FAIL** on subprocess close-wait, cancellation/replacement races, and missing renderer metadata/warnings. The product owner authorized a narrow local correction, which is implemented with test-first regressions and has passed the full authoritative sequence. The local `videos-teste/` input directory is ignored, private, and reserved for a later authorized smoke; it has not been inspected or processed. **Publication, re-judge, external `ffprobe` installation/execution, real-input manual smoke, freeze, and all later work remain separately gated and unauthorized.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 7 are published with green hosted CI; CP7 is exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`, hosted run `29954962344`. The independent implementation judge returned **FAIL** on subprocess close-wait, cancellation/replacement races, and missing renderer metadata/warnings. The correction was published at `d76155aa63427b8b55d2d7c769c28a5982bd49aa`, but hosted CI run `29960043463` exposed seven stale higher-level fakes that omitted the now-required child `close` event. The authorized harness/evidence/continuity follow-up now passes the complete local sequence: 35 files / 398 tests and build. Publication and green hosted CI remain required before the new judge. The local `videos-teste/` input directory remains ignored, private, and uninspected. **External `ffprobe`, real-input smoke, freeze, M1.1, and later work remain separately gated and unauthorized.**

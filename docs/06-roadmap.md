@@ -2,6 +2,8 @@
 
 Status: Approved / Frozen — M0.0 (2026-07-21)
 
+Lifecycle note: M0.1 is frozen `PASS`. M1.0 implementation is complete but remains at its correction/verification gate after the first implementation judge and a failed correction CI. M1.1 has not started. See `docs/PROJECT-STATE.md` for live authorization and evidence; this frozen roadmap still defines milestone order and scope.
+
 ## Release strategy
 
 Prioritize narrow vertical slices that produce a visible artifact. Do not build the AI sequence composer before the deterministic timeline engine is proven.
@@ -47,6 +49,8 @@ Exit gate: clean build, tests, lint/typecheck, secure renderer boundary, indepen
 - timed transcript JSON import;
 - transcript normalization;
 - project persistence can remain file-based.
+
+Delivery state: implemented without persistence; correction follow-up and independent re-judge pending before manual smoke/freeze.
 
 ### M1.1 — Text Selection Resolver
 

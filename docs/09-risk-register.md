@@ -17,3 +17,14 @@ Status: Approved initial register / Frozen — M0.0 (2026-07-21)
 | FFmpeg packaging/license constraints | High | development uses declared external dependency; distribution review before packaging | M4 |
 | Electron privileged APIs leak into UI | Critical | sandbox, context isolation, narrow typed preload bridge | M0.1 |
 | Product expands into a full NLE too early | High | frozen non-goals and scope judge | Every milestone |
+
+## Live supplemental risks
+
+These operational risks were discovered after the frozen M0.0 register and do not change its normative entries.
+
+| Risk | Impact | Current mitigation | Gate |
+|---|---:|---|---|
+| Higher-level process fakes omit a terminal lifecycle event and hide cleanup regressions or hang CI | High | shared close-wait assertions, focused runner tests, hosted Linux CI before judge | M1.0+ |
+| A tool session records `PASS` before a long-running command reaches terminal output | High | terminal-result evidence rule, hosted exact-SHA verification, live handoff update | Every milestone |
+| Current authorization becomes ambiguous across many historical documents | High | `AGENTS.md`, `CONTRIBUTING.md`, documentation map, single live `PROJECT-STATE.md` | Every milestone |
+| Private manual-smoke media is traversed by generic repository tooling | Critical | ignored local directory, Git-visible inventory guard, explicit no-inspection rule | M1.0 smoke |

@@ -2,6 +2,16 @@
 
 Status: Approved / Frozen — M0.0 (2026-07-21)
 
+Lifecycle note: the frozen strategy remains binding. Live gate/evidence status is maintained in `docs/PROJECT-STATE.md`.
+
+## Evidence integrity rules
+
+- A test command counts as `PASS` only after a terminal success summary or zero exit is positively observed; a running or detached process is not evidence.
+- Hosted CI must be green on the exact published candidate before an implementation judge begins.
+- A failed hosted run is recorded even when focused local tests passed; retry history is part of the evidence.
+- Child-process fakes must model the lifecycle relevant to the contract. If production waits for `close` after kill, timeout, output limit, or cancellation, higher-level fakes must emit `close` and assert that completion did not occur earlier.
+- Judge work is read-only and does not repair the candidate it evaluates.
+
 ## Test pyramid
 
 ### Pure unit tests

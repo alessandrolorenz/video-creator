@@ -1,6 +1,8 @@
-# Proposed Repository Structure
+# Repository Structure
 
 Status: Approved / Frozen — M0.0 (2026-07-21)
+
+Lifecycle note: the original proposal is implemented with the M1.0-specific differences documented below. Live state is in `docs/PROJECT-STATE.md`.
 
 ```text
 ai-video-assembly/
@@ -15,28 +17,30 @@ ai-video-assembly/
 │  ├─ media/                # ffprobe/ffmpeg adapters and job contracts
 │  ├─ timeline/             # timeline operations and validators
 │  ├─ ai-contracts/         # provider-neutral schemas and semantic validation
-│  ├─ ai-orchestrator/      # prompts, sampling plans, provider adapters
-│  ├─ export/               # internal JSON, FCP7 XML, later OTIO/EDL
-│  ├─ fixtures/             # tiny versioned test media and transcripts
-│  └─ test-support/         # builders, fakes, golden helpers
+│  └─ export/               # internal JSON, FCP7 XML, later OTIO/EDL
 ├─ docs/
 │  ├─ decisions/
 │  ├─ specs/
 │  ├─ prompts/
-│  └─ research/
+│  ├─ PROJECT-STATE.md      # live continuation handoff
+│  └─ README.md             # documentation authority map
 ├─ scripts/
+├─ AGENTS.md
+├─ CONTRIBUTING.md
 ├─ package.json
 ├─ pnpm-workspace.yaml
 ├─ tsconfig.base.json
 └─ README.md
 ```
 
+`packages/fixtures`, `packages/test-support`, and `packages/ai-orchestrator` are intentionally absent. M1.0 authorizes no committed binary fixture or AI provider/orchestrator. Worker, shared IPC, and integration harness code live under `apps/desktop/src/worker`, `apps/desktop/src/shared`, and `apps/desktop/integration` respectively. Generated `dist` and workspace `node_modules` directories are ignored.
+
 ## Dependency rules
 
 - `domain` imports no application or infrastructure package.
 - `transcript` may depend on `domain`.
 - `timeline` may depend on `domain`.
-- `media`, `ai-orchestrator`, and `export` depend on domain contracts through explicit adapters.
+- `media` and `export` depend on domain contracts only through declared edges and explicit adapters.
 - renderer never imports Node-only media implementations.
-- Electron-specific modules exist only inside `apps/desktop/src/main` and `preload`.
+- Electron/Node-specific modules exist only inside the exact owned main, worker, and preload boundaries.
 - provider SDK types do not leak into `ai-contracts` or domain entities.

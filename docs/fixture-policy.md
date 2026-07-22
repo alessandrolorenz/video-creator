@@ -67,3 +67,9 @@ An exception requires a specification amendment that records the old rule, new r
 ## M0.1 enforcement
 
 M0.1 must contain no fixture binary, no `packages/fixtures/` content, and no Git LFS configuration. Checkpoint 1 verifies this state through direct inventory inspection. Checkpoint 2 introduces the reusable repository guard and negative fixtures that enforce these rules without committing prohibited media.
+
+## Current local manual-smoke inputs
+
+The product owner has designated the ignored repository-root `videos-teste/` directory as private local input for a future separately authorized M1.0 smoke. It is not a fixture package, is never inventoried as project evidence, and must not be inspected, hashed, uploaded, or committed before that gate.
+
+The repository guard audits Git-tracked files plus nonignored untracked files. Ignored local smoke inputs are not traversed, while any ignored binary path that is force-added to Git is still rejected by the tracked-file rule.
