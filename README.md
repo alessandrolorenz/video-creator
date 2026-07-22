@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Checkpoint 5 Complete — Awaiting Independent Implementation Judge Authorization**
+Status: **M0.1 Independent Implementation Judge Failed — Documentation Correction Required**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -80,8 +80,9 @@ The current screen reports only the secure repository-foundation status. Media i
 9. ~~Authorize and execute Checkpoint 3 — secure desktop shell and narrow IPC.~~ Completed 2026-07-21.
 10. ~~Authorize and execute Checkpoint 4 — CI and repository documentation.~~ Completed 2026-07-21.
 11. ~~Authorize and execute Checkpoint 5 — clean-room automated evidence.~~ Completed 2026-07-21.
-12. Authorize and run the independent implementation judge. **Current gate.**
-13. Start M1.0 only after M0.1 is frozen.
+12. ~~Authorize and run the independent implementation judge.~~ Completed 2026-07-21; verdict: `FAIL`.
+13. Authorize the required README policy-link correction and independent re-judge. **Current gate.**
+14. Start M1.0 only after M0.1 is frozen.
 
 ## Key documents
 
@@ -100,4 +101,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–5 established the verified Git baseline, toolchain, seven-project workspace, domain and provider-neutral contracts, exact dependency lockfile, test suite, fixture guard, secure Electron shell, reproducible CI, operational documentation, and clean-room evidence. **The independent implementation judge and M0.1 freeze remain separately gated and unauthorized.**
+M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–5 established the implementation and clean-room evidence. The independent implementation judge returned `FAIL` because this README mentions `docs/fixture-policy.md` without a Markdown link. **Correction, re-judge, manual smoke, and M0.1 freeze remain separately gated.**
