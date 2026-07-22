@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Independent Implementation Judge Failed — Documentation Correction Required**
+Status: **M0.1 Independent Implementation Re-Judge Passed — Manual Smoke Authorization Pending**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -81,8 +81,10 @@ The current screen reports only the secure repository-foundation status. Media i
 10. ~~Authorize and execute Checkpoint 4 — CI and repository documentation.~~ Completed 2026-07-21.
 11. ~~Authorize and execute Checkpoint 5 — clean-room automated evidence.~~ Completed 2026-07-21.
 12. ~~Authorize and run the independent implementation judge.~~ Completed 2026-07-21; verdict: `FAIL`.
-13. Authorize the required README policy-link correction and independent re-judge. **Current gate.**
-14. Start M1.0 only after M0.1 is frozen.
+13. ~~Authorize the required README policy-link correction and independent re-judge.~~ Completed 2026-07-22; verdict: `PASS`.
+14. Authorize and complete the M0.1 manual smoke checklist. **Current gate.**
+15. Explicitly approve and freeze M0.1 after the smoke evidence passes.
+16. Start M1.0 only after M0.1 is frozen.
 
 ## Key documents
 
@@ -101,4 +103,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–5 established the implementation and clean-room evidence. The independent implementation judge returned `FAIL` because this README mentions `docs/fixture-policy.md` without a Markdown link. **Correction, re-judge, manual smoke, and M0.1 freeze remain separately gated.**
+M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–5 established the implementation and clean-room evidence. The first implementation judge found one missing README link; commit `9cec1cf` corrected it, hosted CI run `29918638581` passed, and a new independent judge returned `PASS`. **Manual smoke and M0.1 freeze remain separately gated and are not yet complete.**
