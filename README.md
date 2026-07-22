@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Checkpoint 3 Complete — Awaiting Checkpoint 4 Authorization**
+Status: **M0.1 Checkpoint 4 Complete — Awaiting Checkpoint 5 Authorization**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -22,6 +22,51 @@ The product is divided into two engines:
 
 AI never directly executes arbitrary media commands. It proposes a structured plan; deterministic code validates and compiles it.
 
+## Development
+
+Requirements:
+
+- Node.js `24.18.x`;
+- pnpm `11.9.x`.
+
+Install the exact locked dependencies:
+
+```sh
+nvm use
+corepack enable
+pnpm install --frozen-lockfile
+```
+
+Run the complete repository verification:
+
+```sh
+pnpm format:check
+pnpm lint
+pnpm check:boundaries
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+Build and launch the neutral desktop foundation:
+
+```sh
+pnpm build
+pnpm --dir apps/desktop start
+```
+
+The current screen reports only the secure repository-foundation status. Media import, transcript, timeline, AI, persistence, render, and export workflows are intentionally absent from M0.1.
+
+## Workspace map
+
+- [`apps/desktop`](apps/desktop) — Electron main, sandboxed preload, and browser-only React renderer.
+- [`packages/domain`](packages/domain) — validated integer-microsecond time and source ranges.
+- [`packages/timeline`](packages/timeline) — empty versioned timeline foundation.
+- [`packages/media`](packages/media) — worker job/cancellation interfaces only.
+- [`packages/ai-contracts`](packages/ai-contracts) — provider-neutral AI interfaces only.
+- [`packages/export`](packages/export) — reserved empty workspace boundary.
+- [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — frozen install and complete verification sequence.
+
 ## Recommended delivery order
 
 1. ~~Approve this planning package.~~ Completed 2026-07-21.
@@ -33,9 +78,10 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 7. ~~Authorize and execute Checkpoint 1 — toolchain and workspace skeleton.~~ Completed 2026-07-21.
 8. ~~Authorize and execute Checkpoint 2 — domain/contracts and dependency guard.~~ Completed 2026-07-21.
 9. ~~Authorize and execute Checkpoint 3 — secure desktop shell and narrow IPC.~~ Completed 2026-07-21.
-10. Authorize Checkpoint 4 — CI and repository documentation. **Current gate.**
-11. Execute Checkpoint 5 automated evidence and the separately authorized implementation-judge/freeze gates.
-12. Start M1.0 only after M0.1 is frozen.
+10. ~~Authorize and execute Checkpoint 4 — CI and repository documentation.~~ Completed 2026-07-21.
+11. Authorize Checkpoint 5 — clean-room automated evidence. **Current gate.**
+12. Run the separately authorized implementation-judge/freeze gates.
+13. Start M1.0 only after M0.1 is frozen.
 
 ## Key documents
 
@@ -54,4 +100,4 @@ AI never directly executes arbitrary media commands. It proposes a structured pl
 
 ## Current authorization
 
-M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–3 established the verified Git baseline, toolchain, seven-project workspace, domain and provider-neutral contracts, exact dependency lockfile, test suite, fixture guard, and secure Electron shell with a one-method IPC bridge. **Checkpoint 4 CI and repository documentation remain unauthorized.**
+M0.0, the amended M0.1 foundation specification, and the M0.1 implementation plan are frozen/approved. Checkpoints 0–4 established the verified Git baseline, toolchain, seven-project workspace, domain and provider-neutral contracts, exact dependency lockfile, test suite, fixture guard, secure Electron shell, reproducible CI, and operational repository documentation. **Checkpoint 5 clean-room automated evidence remains unauthorized.**
