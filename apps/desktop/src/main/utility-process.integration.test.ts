@@ -76,10 +76,12 @@ describe('real Electron utility-process integration', () => {
     await writeFile(failedMedia, 'failure', 'utf8');
     await writeFile(slowMedia, 'slow', 'utf8');
 
-    const useXvfb = process.platform === 'linux' && existsSync('/usr/bin/xvfb-run');
+    const hasDisplay = Boolean(process.env.DISPLAY?.trim());
+    const useXvfb = process.platform === 'linux' && !hasDisplay && existsSync('/usr/bin/xvfb-run');
+    const useHeadless = process.platform === 'linux' && !hasDisplay && !useXvfb;
     const electronArguments = [
       ...(process.platform === 'linux'
-        ? ['--no-sandbox', '--disable-gpu', ...(useXvfb ? [] : ['--headless'])]
+        ? ['--no-sandbox', '--disable-gpu', ...(useHeadless ? ['--headless'] : [])]
         : []),
       resolve(desktopRoot, 'integration/utility-process-harness'),
       resolve(desktopRoot, 'dist/worker/index.js'),
@@ -95,7 +97,11 @@ describe('real Electron utility-process integration', () => {
       {
         cwd: desktopRoot,
         encoding: 'utf8',
-        env: { ...process.env, ELECTRON_DISABLE_GPU: '1' },
+        env: {
+          ...process.env,
+          CP5_HARNESS_DEBUG: '1',
+          ELECTRON_DISABLE_GPU: '1',
+        },
         stdio: ['ignore', 'pipe', 'pipe'],
         timeout: 45_000,
       },

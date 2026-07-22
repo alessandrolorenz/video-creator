@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 4 Published — Hosted CI PASS; Checkpoint 5 Implemented Locally — PASS**
+Status: **M0.1 Frozen — PASS; M1.0 Checkpoint 5 Published — Local PASS; Hosted CI portability correction in progress**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Purpose
@@ -99,7 +99,7 @@ The current screen reports only the secure repository-foundation status. Media i
 27. ~~Explicitly authorize publication of M1.0 Checkpoint 2 and, after hosted CI passes, authorize Checkpoint 3 — dedicated media-probe utility worker.~~ Completed 2026-07-22; CP2 hosted CI and CP3 local verification `PASS`.
 28. ~~Explicitly authorize publication of M1.0 Checkpoint 3 and, after hosted CI passes, authorize Checkpoint 4 — main-owned privileged adapters, utility client, and ingest controller.~~ Completed 2026-07-22; CP3 hosted CI and CP4 local verification `PASS`.
 29. ~~Explicitly authorize publication of M1.0 Checkpoint 4 and, after hosted CI passes, authorize Checkpoint 5 — strict IPC/preload surface, lifecycle wiring, and real Electron utility-process integration.~~ Completed 2026-07-22; CP4 hosted CI and CP5 local verification `PASS`.
-30. Explicitly authorize publication of M1.0 Checkpoint 5 and, after hosted CI passes, authorize Checkpoint 6 — renderer ingest UX. **Current gate.**
+30. ~~Explicitly authorize publication of M1.0 Checkpoint 5 and, after hosted CI passes, authorize Checkpoint 6 — renderer ingest UX.~~ CP5 was published as `aa3bfbab15b427333616b621c2bd57283b1523d9`; its first hosted run exposed a Linux display-launch portability failure. CP6 is authorized but remains blocked until the corrected CP5 run is green. **Current gate.**
 
 ## Key documents
 
@@ -124,4 +124,4 @@ The current screen reports only the secure repository-foundation status. Media i
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 4 were published with green hosted CI. Checkpoint 5 was activated only after the exact CP4 commit passed hosted CI, then implemented test-first and verified locally with the compiled worker launched through real Electron `utilityProcess`. **Checkpoint 5 publication, Checkpoint 6 and all later work, hosted CI for the CP5 candidate, renderer ingest UX, and external `ffprobe` installation/execution remain separately gated and unauthorized.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 4 were published with green hosted CI. Checkpoint 5 was implemented test-first, verified locally, and published as `aa3bfbab15b427333616b621c2bd57283b1523d9`. Its first hosted run failed only in the real Electron integration while 370 other tests passed; a Linux virtual-display portability correction is in progress. **Checkpoint 6 is authorized only after corrected CP5 hosted CI passes and remains blocked. External `ffprobe` installation/execution, CP6 publication, and all later work remain separately gated.**
