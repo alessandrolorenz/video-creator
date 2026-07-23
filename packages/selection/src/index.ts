@@ -54,3 +54,4 @@ export function isConfidence(value: number): boolean {
 }
 
 export { normalizeSelectionText, type NormalizedSelectionText } from './normalize.js';
+export { findExactOrderedMatches } from './exact-match.js';
