@@ -6,9 +6,9 @@ The single live handoff: current gate, next authorized action, and the latest ev
 
 ## Status
 
-**M0.1 FROZEN `PASS` · M1.0 independent re-judge `PASS WITH NOTES` · real-input manual-smoke authorization pending.**
+**M0.1 FROZEN `PASS` · M1.0 independent re-judge `PASS WITH NOTES` (smoke/freeze pending) · M1.1 spec FROZEN, CP1 built and locally verified (publish + CI + judge pending).**
 
-M1.0 currently imports one local video, probes sanitized metadata in a dedicated utility process, imports one strict timed-transcript JSON, and displays a renderer-safe summary. It does **not** yet select passages, build/preview a timeline, render/export, persist, call AI, or handle multiple assets. No OpenAI key needed.
+M1.0 currently imports one local video, probes sanitized metadata in a dedicated utility process, imports one strict timed-transcript JSON, and displays a renderer-safe summary. M1.1 (Text Selection Resolver) is in build: CP1 established the pure `selection` package and its boundary edges; CP2–CP6 (normalization, exact/fuzzy matching, ambiguity, result contract) are not yet built. It does **not** yet select passages, build/preview a timeline, render/export, persist, call AI, or handle multiple assets. No OpenAI key needed.
 
 ## Latest evidence
 
@@ -21,13 +21,16 @@ Refresh before working:
 pnpm doctor && git status -sb && git rev-parse HEAD && gh run list --branch main --limit 3
 ```
 
-## Next action (requires explicit authorization)
+## Next action
 
-Authorize the **external `ffprobe` prerequisite** plus access to privacy-approved **`videos-teste/`** for the M1.0 manual-smoke checklist. After smoke evidence is recorded, request explicit M1.0 freeze, then plan M1.1.
+- **M1.1 CP1 (Guarded):** publish the CP1 diff, require green hosted CI on its exact SHA, then run one diff-scoped independent judge (CP1 touches the boundary guard). Local verification passed: format, lint, boundaries, typecheck, build, and 404 tests (398 prior + 6 new `selection` tests). The one local test failure — `apps/desktop/.../utility-process.integration.test.ts` — reproduces identically on clean HEAD and is a pre-existing macOS-local Electron-launch issue; it runs green under CI's Linux/xvfb.
+- **Then CP2–CP6 (Routine):** normalization → exact match → fuzzy match → ambiguity/alternatives → result contract. Verified by CI + boundary guard + property tests + self-review; no judge.
+
+Track A (M1.0 freeze) remains open and independent: authorize the external `ffprobe` prerequisite + privacy-approved `videos-teste/` for manual smoke, then request M1.0 freeze.
 
 ## Not authorized
 
-Real `ffprobe` install/discovery/execution · inspecting or processing `videos-teste/` · real-input manual smoke · M1.0 freeze or M1.1 · OpenAI/cloud/API keys · persistence, timeline editing, preview, render, or export.
+Real `ffprobe` install/discovery/execution · inspecting or processing `videos-teste/` · real-input manual smoke · M1.0 freeze · milestones beyond M1.1 (M1.2 timeline/preview, M1.3 render/export) · OpenAI/cloud/API keys · persistence, timeline editing, preview, render, or export.
 
 ## Open non-blocking notes
 
