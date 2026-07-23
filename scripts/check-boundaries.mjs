@@ -39,6 +39,7 @@ const FRAMEWORK_INDEPENDENT = new Set([
   'timeline',
   'media',
   'transcript',
+  'selection',
   'ai-contracts',
   'export',
 ]);
@@ -185,6 +186,9 @@ function isAllowedWorkspaceEdge(source, target) {
   }
   if (source.directoryName === 'media' || source.directoryName === 'ai-contracts') {
     return target.directoryName === 'domain';
+  }
+  if (source.directoryName === 'selection') {
+    return target.directoryName === 'domain' || target.directoryName === 'transcript';
   }
   return true;
 }

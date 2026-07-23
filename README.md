@@ -1,6 +1,6 @@
 # AI Video Assembly — Planning Package
 
-Status: **M0.1 Frozen — PASS; M1.0 Implementation Judge — FAIL; CI Follow-up Published — Hosted CI PASS; Handoff Evidence Pending**
+Status: **M0.1 Frozen — PASS; M1.0 Independent Re-Judge — PASS WITH NOTES; Real-Input Smoke Authorization Pending**
 Working title: **AI Video Assembly** (provisional; not a product-name decision)
 
 ## Start here
@@ -160,7 +160,8 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 33. ~~Explicitly authorize and implement a narrow local correction for the implementation-judge findings.~~ Authorized and implemented 2026-07-22; focused verification passed, while the claimed complete local test pass was later retracted because no terminal summary had been observed.
 34. ~~Explicitly authorize and publish the judge-report and correction commits.~~ Completed 2026-07-22 at `d76155aa63427b8b55d2d7c769c28a5982bd49aa`; hosted run [`29960043463`](https://github.com/alessandrolorenz/video-creator/actions/runs/29960043463) failed because seven higher-level process fakes did not emit the newly required child `close` event.
 35. ~~Correct the seven test harnesses, create the repository continuity setup, publish the follow-up, and require green hosted CI.~~ Completed 2026-07-22; commit `8c8b85b7373a370049112387e2fcdbd5b7a722a6`, hosted run [`29961423406`](https://github.com/alessandrolorenz/video-creator/actions/runs/29961423406) `PASS`.
-36. Publish this documentary handoff evidence, require green hosted CI on the resulting exact HEAD, then run the authorized new independent implementation judge. **Current gate.**
+36. ~~Publish the documentary handoff evidence, require green hosted CI, and run the new independent implementation judge.~~ Judged exact SHA `f044b8ddd7b52768086935601c3c40517b906d1a`; hosted run [`29961604142`](https://github.com/alessandrolorenz/video-creator/actions/runs/29961604142) `PASS`; re-judge verdict `PASS WITH NOTES`.
+37. Explicitly authorize the external `ffprobe` prerequisite and privacy-approved `videos-teste/` inputs for the M1.0 manual smoke. **Next gate; not yet authorized.**
 
 ## Key documents
 
@@ -185,10 +186,11 @@ The current M1.0 screen accepts one video and one timed transcript through nativ
 - [M1.0 final plan-judge report](docs/specs/M1.0-final-plan-judge-report.md)
 - [M1.0 independent implementation-judge report](docs/specs/M1.0-independent-judge-report.md)
 - [M1.0 implementation-judge correction](docs/specs/M1.0-implementation-judge-correction.md)
+- [M1.0 independent implementation re-judge report](docs/specs/M1.0-independent-rejudge-report.md)
 - `docs/prompts/M0.1-planning-prompt.md`
 - `docs/specs/M0.0-freeze-report.md`
 - [M0.1 freeze report](docs/specs/M0.1-freeze-report.md)
 
 ## Current authorization
 
-M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 7 are published with green hosted CI; CP7 is exact commit `a67538edd9f1df91e4790e6795c1b16ca6e3ce2f`, hosted run `29954962344`. The independent implementation judge returned **FAIL** on subprocess close-wait, cancellation/replacement races, and missing renderer metadata/warnings. The first correction CI failed seven stale higher-level fakes. Follow-up `8c8b85b7373a370049112387e2fcdbd5b7a722a6` now passes the complete local and hosted sequence: 35 files / 398 tests and build; hosted run `29961423406` is green. This handoff evidence must be published and green on its own exact HEAD before the authorized new judge starts. The local `videos-teste/` input directory remains ignored, private, and uninspected. **External `ffprobe`, real-input smoke, freeze, M1.1, and later work remain separately gated and unauthorized.**
+M0.0 and M0.1 remain frozen. Amendments 001 and 002 are normative, and Gate 4 passed with notes. M1.0 Checkpoints 1 through 7 are published. The first implementation judge returned `FAIL`; its correction and lifecycle-test follow-up are complete. Exact candidate `f044b8ddd7b52768086935601c3c40517b906d1a` passed hosted run `29961604142`, and the new independent judge returned **PASS WITH NOTES** with no blockers. The local `videos-teste/` directory remains ignored, private, and uninspected. **The next gate is explicit authorization for the external `ffprobe` prerequisite and private inputs for manual smoke. Smoke, freeze, M1.1, and later work remain unauthorized until their gates.**

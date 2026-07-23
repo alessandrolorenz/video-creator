@@ -1,21 +1,37 @@
-# Repository Continuity Instructions
+# Repository Operating Instructions
 
-These instructions apply to the entire repository and are binding for automated agents.
+This is the **single canonical rule set** for humans and automated agents. Other docs link here instead of restating rules. Binding for the whole repository.
 
-## Start here
+## Read path (this is all you need to start)
 
-1. Read `docs/PROJECT-STATE.md` for the live milestone, gate, blockers, and authorized next actions.
-2. Read `docs/README.md` for the document hierarchy and the distinction between frozen, historical, and live artifacts.
-3. Run `pnpm doctor`, then confirm `git status -sb` and the current hosted CI for `HEAD` before changing anything.
-4. Read the frozen specification, amendments, implementation plan, and latest judge evidence for the milestone in scope.
+1. This file.
+2. [`docs/PROJECT-STATE.md`](docs/PROJECT-STATE.md) — current gate, next authorized action, latest SHA/CI.
+3. The active checkpoint's section in the milestone spec linked from `PROJECT-STATE.md`.
 
-Do not infer current authorization from an old prompt, report, or status line. Historical artifacts describe their own checkpoint. `docs/PROJECT-STATE.md` is the operational handoff, but Git and hosted CI remain the final source of truth for branch, SHA, and run status.
+Read plans, implementation reports, amendments, judge reports, and [`docs/EVIDENCE-LOG.md`](docs/EVIDENCE-LOG.md) **only when a task needs them** — they are not part of routine startup. Git and hosted CI are the final source of truth; never infer authorization from stale prose or an old report.
 
-## Required workflow
+Then run, before changing anything:
 
-- Follow `docs/07-sdd-workflow-and-gates.md` and stop at every explicit authorization boundary.
-- Write or update regression tests before production behavior when correcting a defect.
-- Run the focused tests while iterating and the complete authoritative sequence before a candidate commit:
+```sh
+pnpm doctor        # read-only; no ffprobe, no private-input inspection
+git status -sb && git rev-parse HEAD
+gh run list --branch main --limit 3
+```
+
+## Process
+
+Three gates — **Spec → Build → Verify** — with rigor scaled to risk. Full definition: [`docs/07-sdd-workflow-and-gates.md`](docs/07-sdd-workflow-and-gates.md). In short:
+
+- Implement only the authorized checkpoint; small reviewable diffs; stop at each authorization boundary.
+- Add the failing regression test first when correcting a defect.
+- **Routine** checkpoints are verified by CI + boundary guard + self-review. **Guarded** checkpoints (process/worker isolation, IPC/preload/renderer surface, path redaction/privacy, filesystem/spawn, AI plan validation, interchange export) also require one diff-scoped independent judge. When in doubt, tag Guarded.
+- Update `PROJECT-STATE.md` and append one line to `EVIDENCE-LOG.md` whenever a gate, failure, CI result, verdict, smoke, or freeze changes.
+
+A local command passes only when it reaches a terminal success result. Hosted CI must be green on the exact published SHA before a judge runs.
+
+## Authoritative verification sequence
+
+Run before a candidate commit (CI runs the same):
 
 ```sh
 env CI=true pnpm install --frozen-lockfile
@@ -27,25 +43,20 @@ env CI=true pnpm test
 env CI=true pnpm build
 ```
 
-- A local command is not a pass unless it reaches a terminal success result. Hosted CI must pass on the exact published SHA before an independent judge starts.
-- Update `docs/PROJECT-STATE.md`, the active milestone implementation report, and any affected checklist whenever a gate, failure, authorization, or published result changes.
-- Preserve frozen normative requirements. Amend them only through the approved amendment process; use lifecycle notes or live state documents for status changes.
+## Hard boundaries (never cross without an explicit gate)
 
-## Security, privacy, and scope
-
-- Never inspect, enumerate, hash, upload, commit, or process `videos-teste/` unless a real-input smoke is separately authorized. It is private local input, not a repository fixture.
-- Do not install, locate, or execute a real `ffprobe`/FFmpeg tool unless that external prerequisite gate is explicitly authorized. Text-only fake executables used by automated tests are allowed.
-- M1.0 makes no OpenAI or cloud request and needs no API key. Never add or request a key for this milestone.
-- Do not add binary fixtures, Git LFS, downloads in CI, dependencies, persistence, editing, rendering, export, AI behavior, or later-milestone UI without explicit scope authorization.
-- Keep privileged filesystem, process, environment, path, and Electron operations in their owned main/worker boundaries. Renderer and preload surfaces remain narrow, typed, and path-redacted.
+- **`videos-teste/`** is private local smoke input, not a fixture. Never inspect, enumerate, hash, upload, commit, or process it until a real-input smoke is separately authorized.
+- Do not install, locate, or execute a real `ffprobe`/FFmpeg. Text-only fakes in tests are fine. The external `ffprobe` prerequisite has its own gate.
+- No OpenAI/cloud request or API key in the current milestone.
+- No new dependency, binary fixture, Git LFS, CI download, persistence, editing, rendering, export, AI behavior, or later-milestone UI without explicit scope authorization. The boundary guard (`pnpm check:boundaries`) enforces much of this.
+- Keep privileged filesystem/process/env/path/Electron operations inside their owned `main`/`worker` boundaries. Renderer and preload surfaces stay narrow, typed, and path-redacted.
 
 ## Repository hygiene
 
-- Use pnpm `11.9.x` with Node.js `24.18.x`; do not regenerate the lockfile unless dependency work is explicitly authorized.
-- Do not stage ignored private inputs or generated `node_modules`/`dist` output.
-- Preserve unrelated user changes in a dirty worktree.
-- Use focused, reviewable commits. Do not push, re-run a judge, perform manual smoke, or freeze a milestone without the corresponding authorization.
+- pnpm `11.9.x` on Node `24.18.x`; do not regenerate `pnpm-lock.yaml` unless dependency work is authorized.
+- Do not stage ignored private inputs or generated `node_modules`/`dist`.
+- Preserve unrelated changes in a dirty worktree. Use focused commits naming the milestone/correction.
 
 ## Current product boundary
 
-M0.1 is frozen. M1.0 contains only secure local ingest of one video and one strict timed-transcript JSON document plus sanitized status/metadata UI. Passage selection, matching, timeline editing, preview, render, export, persistence, AI, and multi-asset workflows belong to later milestones and are absent by design.
+M0.1 frozen. M1.0 is **only** secure local ingest of one video + one strict timed-transcript JSON, plus sanitized status/metadata UI. Passage selection, matching, timeline editing, preview, render, export, persistence, AI, and multi-asset workflows are later milestones and absent by design.

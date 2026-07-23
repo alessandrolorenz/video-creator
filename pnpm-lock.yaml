@@ -91,6 +91,15 @@ importers:
         specifier: workspace:*
         version: link:../domain
 
+  packages/selection:
+    dependencies:
+      '@ai-video-assembly/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@ai-video-assembly/transcript':
+        specifier: workspace:*
+        version: link:../transcript
+
   packages/timeline:
     dependencies:
       '@ai-video-assembly/domain':

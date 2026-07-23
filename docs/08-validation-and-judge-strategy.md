@@ -1,132 +1,48 @@
 # Validation and Judge Strategy
 
-Status: Approved / Frozen — M0.0 (2026-07-21)
+Status: Revised 2026-07-22 — diff-scoped judging. Rationale: [`decisions/ADR-004-lean-risk-tiered-gates.md`](decisions/ADR-004-lean-risk-tiered-gates.md).
 
-Lifecycle note: the frozen strategy remains binding. Live gate/evidence status is maintained in `docs/PROJECT-STATE.md`.
+Judges exist to catch what CI cannot: subtle scope creep and boundary/security/AI-contract mistakes. They run only on **Guarded** checkpoints (see [`07-sdd-workflow-and-gates.md`](07-sdd-workflow-and-gates.md)) and they review the **diff**, not the whole repository.
 
 ## Evidence integrity rules
 
-- A test command counts as `PASS` only after a terminal success summary or zero exit is positively observed; a running or detached process is not evidence.
-- Hosted CI must be green on the exact published candidate before an implementation judge begins.
-- A failed hosted run is recorded even when focused local tests passed; retry history is part of the evidence.
-- Child-process fakes must model the lifecycle relevant to the contract. If production waits for `close` after kill, timeout, output limit, or cancellation, higher-level fakes must emit `close` and assert that completion did not occur earlier.
-- Judge work is read-only and does not repair the candidate it evaluates.
+- A test command is `PASS` only after a terminal success summary or zero exit is positively observed. A running or detached process is not evidence.
+- Hosted CI must be green on the exact published candidate **before** a judge starts. The judge trusts that green run for clean-install and full-suite reproduction and does not repeat it.
+- A failed hosted run is recorded in `EVIDENCE-LOG.md` even when focused local tests passed; retry history is part of the evidence.
+- Child-process fakes must model the lifecycle the contract depends on (e.g. emit `close` after kill/timeout/limit/cancel, and assert completion did not resolve earlier).
+- Judge work is read-only and never repairs the candidate it evaluates.
 
-## Test pyramid
+## Diff-scoped judge protocol
 
-### Pure unit tests
+Given a Guarded checkpoint with green CI on an exact SHA, the judge:
 
-- time conversion and rational arithmetic;
-- interval invariants;
-- transcript normalization;
-- exact and fuzzy selection matching;
-- ambiguity and alternative generation;
-- timeline duration and ordering;
-- AI response schema and semantic validation;
-- export model construction.
+1. reads the checkpoint **diff** and the **spec section(s)** it implements — not the full tree;
+2. confirms green CI on that exact SHA (does not re-run install/full suite);
+3. audits the diff against the Guarded checklist for the surface it touches;
+4. returns **PASS**, **PASS WITH NOTES**, or **FAIL**, with each finding tied to a specific file/line and spec requirement.
 
-### Property-based tests
+A `FAIL` lists only blocking findings. A re-judge reviews **only the correction diff** plus the original findings — never a fresh cold read of unchanged code.
 
-Generate ranges and timelines to verify:
+### Guarded checklist (apply the rows the diff touches)
 
-- no negative durations;
-- no out-of-bounds source ranges;
-- stable ordering;
-- concatenated duration equals the sum of clips and gaps;
-- trim/slip operations preserve invariants;
-- serialization round trips.
+- **Scope:** only approved capabilities changed; no forbidden dependency, binary fixture, persistence, or later-milestone feature.
+- **Process/worker:** fixed argument arrays, `shell:false`, enforced timeout/cancel/output-limit, correct `close` handling.
+- **IPC/preload/renderer:** narrow typed surface; renderer receives only sanitized names/summaries/fixed errors/progress — never absolute paths, transcript text, raw `ffprobe` output, or environment.
+- **Privacy:** path redaction holds; no private input read, hashed, or logged.
+- **AI contract (AI milestones):** strict schema adherence; invalid candidate IDs and out-of-range decisions rejected; mandatory constraints enforced; no command-execution fields accepted.
+- **Interop (export milestones):** generated XML/EDL/OTIO validates and imports into the target NLE.
 
-### Fixture integration tests
+## Test strategy (what CI should cover)
 
-Use small committed fixtures:
+- **Unit:** time/rational arithmetic, interval invariants, transcript normalization, selection matching, ambiguity/alternatives, timeline duration/ordering, AI response schema+semantic validation, export model construction.
+- **Property-based:** no negative durations or out-of-bounds ranges; stable ordering; concatenated duration equals sum of clips+gaps; trim/slip preserve invariants; serialization round-trips.
+- **Fixture integration (small committed fixtures per [`fixture-policy.md`](fixture-policy.md)):** exact/ambiguous/missing/multilingual matches; A/V sync markers.
+- **Media-output:** validate ffprobe duration tolerance, stream count, codec/container policy, valid timestamps, boundary frame samples, audio presence, A/V sync — not raw byte hashes across FFmpeg versions.
 
-- short constant-frame-rate video;
-- short variable-frame-rate sample when that support milestone begins;
-- transcript with exact matches;
-- repeated phrase ambiguity;
-- punctuation/case variation;
-- missing phrase;
-- multilingual/diacritic sample;
-- audio/video sync markers.
+## AI quality evaluation (later milestones)
 
-### Media-output tests
+When AI editing lands, maintain a versioned evaluation set with human-authored expected qualities (not one "correct cut"), scored on: relevance to brief, narrative coherence, redundancy, pacing, preservation of meaning, technical usability, quality of alternatives, transparency of rationale.
 
-Do not rely only on byte hashes across FFmpeg versions. Validate:
+## Specialized judge lenses (reserved)
 
-- ffprobe duration tolerance;
-- expected stream count;
-- codec/container policy;
-- no invalid timestamps;
-- first/last expected frame samples;
-- audio presence and duration;
-- A/V sync fixture markers;
-- successful decoder playback.
-
-### AI contract tests
-
-Normal CI uses recorded/fake responses. Verify:
-
-- strict schema adherence;
-- invalid candidate IDs rejected;
-- out-of-range decisions rejected;
-- mandatory constraints enforced;
-- low-confidence states preserved;
-- no command execution fields accepted.
-
-### AI quality evaluations
-
-Maintain a versioned evaluation set with human-authored expected qualities rather than a single “correct cut.”
-
-Rubric dimensions:
-
-- relevance to brief;
-- narrative coherence;
-- redundancy;
-- pacing;
-- preservation of meaning;
-- technical usability;
-- quality of alternatives;
-- transparency of rationale.
-
-## Judges
-
-### Scope Judge
-
-Ensures only approved capabilities changed.
-
-### Timeline Correctness Judge
-
-Audits time math, boundary rules, frame-rate assumptions, handles, and serialization.
-
-### Media Pipeline Judge
-
-Audits process isolation, cancellation, errors, FFmpeg arguments, temp files, and output evidence.
-
-### AI Contract Judge
-
-Audits schemas, prompt boundaries, candidate references, validation, privacy modes, and determinism around model output.
-
-### Interoperability Judge
-
-Audits generated XML/EDL/OTIO and requires real imports into target NLEs.
-
-### UX Judge
-
-Ensures ambiguity, confidence, source context, alternatives, trim/slip, and errors are understandable.
-
-## Required smoke evidence for M1 MVP
-
-- import a real local video;
-- import timed transcript;
-- select repeated and unique phrases;
-- resolve ambiguities;
-- preview every cut;
-- reorder;
-- trim and slip within handles;
-- render;
-- play rendered output completely;
-- verify A/V sync;
-- import timeline in Premiere;
-- import timeline in DaVinci Resolve;
-- relink original media where required;
-- compare at least five source boundaries against expected transcript words.
+For AI and interoperability milestones a single judge may apply focused lenses in one pass rather than as separate gated rounds: Scope, Timeline-Correctness, Media-Pipeline, AI-Contract, Interoperability, and UX. These are checklist views, not additional gates.

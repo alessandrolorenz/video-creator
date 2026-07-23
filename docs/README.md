@@ -4,11 +4,13 @@ This index explains where a developer or automated agent should look and which d
 
 ## Read order
 
-1. [`PROJECT-STATE.md`](PROJECT-STATE.md) — live operational handoff and current gate.
-2. [`../README.md`](../README.md) — product overview and normal commands.
-3. [`../AGENTS.md`](../AGENTS.md) or [`../CONTRIBUTING.md`](../CONTRIBUTING.md) — agent or developer workflow.
-4. [`07-sdd-workflow-and-gates.md`](07-sdd-workflow-and-gates.md) — binding gate process.
-5. Active milestone normative and evidence artifacts linked from `PROJECT-STATE.md`.
+The canonical operating rules and minimal read path live in [`../AGENTS.md`](../AGENTS.md). In short:
+
+1. [`../AGENTS.md`](../AGENTS.md) — canonical rules and read path.
+2. [`PROJECT-STATE.md`](PROJECT-STATE.md) — current gate and next authorized action.
+3. The active checkpoint's section in the milestone spec linked from `PROJECT-STATE.md`.
+
+Read [`07-sdd-workflow-and-gates.md`](07-sdd-workflow-and-gates.md) (the Spec → Build → Verify gate process), plans, reports, judge reports, and [`EVIDENCE-LOG.md`](EVIDENCE-LOG.md) only when a task needs them.
 
 ## Document classes
 
@@ -48,6 +50,7 @@ Files under `docs/prompts/` define or record bounded agent/judge instructions. A
 - [`specs/M1.0-implementation-report.md`](specs/M1.0-implementation-report.md)
 - [`specs/M1.0-independent-judge-report.md`](specs/M1.0-independent-judge-report.md)
 - [`specs/M1.0-implementation-judge-correction.md`](specs/M1.0-implementation-judge-correction.md)
+- [`specs/M1.0-independent-rejudge-report.md`](specs/M1.0-independent-rejudge-report.md)
 - [`specs/M1.0-manual-smoke-checklist.md`](specs/M1.0-manual-smoke-checklist.md)
 - [`specs/M1.0-freeze-report.md`](specs/M1.0-freeze-report.md)
 

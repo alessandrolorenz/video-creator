@@ -1,122 +1,59 @@
 # Specification-Driven Workflow and Gates
 
-Status: Approved / Frozen and binding — M0.0 (2026-07-21)
+Status: Revised 2026-07-22 — supersedes the frozen M0.0 nine-gate process. Rationale: [`decisions/ADR-004-lean-risk-tiered-gates.md`](decisions/ADR-004-lean-risk-tiered-gates.md).
 
-## Standard milestone lifecycle
+The process is spec-first with rigor **scaled to risk**. Three gates per milestone; judges only where the risk is real; judges review the diff, not the whole world.
 
-### Gate 1 — Repository / Product Audit
+## The three gates
 
-- inspect current branch, HEAD, worktree, versions, scripts, architecture, tests, and relevant docs;
-- establish a reproducible baseline;
-- identify conflicts and unknowns;
-- no implementation.
+### Gate A — Spec (freeze before code)
 
-### Gate 2 — Specification Freeze
+One `Mxx-spec.md` that defines: objective, scope and non-goals, contracts/invariants, failure modes, UX states, acceptance criteria, and a **checkpoint table** where each checkpoint is tagged **Routine** or **Guarded** (see risk tiers below). Resolve product decisions here. Mark `Approved / Frozen`. No code before explicit authorization.
 
-- define objective, scope, non-goals, contracts, invariants, failure modes, UX states, acceptance criteria, tests, and manual smoke;
-- resolve product decisions;
-- mark the spec `Approved / Frozen`;
-- no code before explicit authorization.
+The old separate audit and implementation-plan artifacts are optional notes now, not required gates. If a milestone is non-trivial, capture the checkpoint breakdown inside the spec's checkpoint table rather than a standalone plan.
 
-### Gate 3 — Implementation Plan
+### Gate B — Build (one checkpoint at a time)
 
-- map spec requirements to concrete files and checkpoints;
-- preserve small reviewable diffs;
-- list tests before implementation;
-- identify rollback boundaries;
-- stop for approval.
+Implement only the authorized checkpoint. Keep diffs small and reviewable. When correcting a defect, add the failing regression test first. Update the implementation report for the checkpoint. Stop at the next authorization boundary.
 
-### Gate 4 — Plan Judge
+### Gate C — Verify (rigor by tier)
 
-An independent judge verifies:
+1. **Mechanical (always):** hosted CI green on the exact published SHA — `format:check`, `lint`, `check:boundaries`, `typecheck`, `test`, `build`. This is the un-gameable floor and it replaces manual re-derivation.
+2. **Review (by tier):**
+   - **Routine checkpoint** → author self-review against the checklist below. No independent judge.
+   - **Guarded checkpoint** → CI green, then **one diff-scoped independent judge** (see [`08-validation-and-judge-strategy.md`](08-validation-and-judge-strategy.md)).
+3. **Smoke + Freeze (when the milestone needs real I/O):** run the manual-smoke checklist, record evidence, then request explicit freeze. These remain behind their own authorization gates (e.g. external `ffprobe`, private `videos-teste/` inputs).
 
-- every spec requirement is covered;
-- no forbidden scope was added;
-- architecture boundaries are preserved;
-- risky assumptions are surfaced;
-- checkpoints are independently verifiable.
+## Risk tiers
 
-Verdicts:
+Tag every checkpoint in the spec.
 
-- PASS
-- PASS WITH NOTES
-- FAIL
+**Guarded** — needs an independent diff-scoped judge. A checkpoint is Guarded if it changes any of:
 
-### Gate 5 — Checkpoint Implementation
+- process/worker isolation or child-process spawning (arguments, `shell:false`, kill/`close` lifecycle);
+- the IPC or preload surface, or what crosses from privileged main/worker to the renderer;
+- path redaction, sanitization, or anything privacy-relevant;
+- filesystem access or external-tool configuration/discovery;
+- AI plan parsing/validation (the schema and semantic guards that stop AI from executing commands);
+- timeline/interchange export correctness.
 
-- implement only the authorized checkpoint;
-- run baseline and targeted tests;
-- update the implementation report;
-- stop before the next checkpoint.
+**Routine** — CI + boundary guard + self-review only. Everything else: pure package logic, docs, tests, refactors with no boundary change, and renderer display of already-sanitized data.
 
-### Gate 6 — Automated Verification
+When in doubt, tag Guarded. Never downgrade a checkpoint to Routine to skip a judge.
 
-- formatting/lint;
-- application typecheck;
-- test typecheck when separate;
-- unit/integration suite;
-- fixture/golden tests;
-- diff check;
-- no unexpected generated artifacts.
+## Self-review checklist (Routine checkpoints)
 
-### Gate 7 — Independent Implementation Judge
+- CI is green on the exact SHA pushed; the diff is what was authorized and nothing more.
+- No forbidden scope, dependency, binary fixture, or later-milestone feature added (the boundary guard confirms most of this).
+- Tests cover the new/changed behavior; a correction added its regression first.
+- `PROJECT-STATE.md` reflects the new current gate and next action; the run/verdict pointer is updated.
 
-The judge inspects actual code and evidence rather than trusting the report.
+## Continuity and handoff
 
-### Gate 8 — Manual Smoke / Interoperability Validation
+`PROJECT-STATE.md` is the single live handoff: current gate, next authorized action, prohibited actions, and the latest SHA/CI pointer only. The historical run/verdict trail lives in append-only [`EVIDENCE-LOG.md`](EVIDENCE-LOG.md), which is **not** part of the normal read path.
 
-Depending on the milestone:
+At every authorization, failure, published CI result, judge verdict, smoke result, or freeze: update `PROJECT-STATE.md`, append one line to `EVIDENCE-LOG.md`, and record a `PASS` only after a terminal command result is observed. Leave private ignored inputs uninspected and absent from evidence. Git and hosted CI remain the final source of truth — never infer authorization from stale prose.
 
-- real video playback;
-- frame/audio boundary behavior;
-- cancellation;
-- render output;
-- NLE import;
-- relinking;
-- AI usefulness evaluation.
+## Change control
 
-### Gate 9 — Freeze
-
-- record final evidence;
-- close known limitations;
-- commit implementation;
-- commit documentary freeze if separated;
-- require a clean worktree;
-- authorize the next milestone explicitly.
-
-## Required milestone artifacts
-
-Each milestone normally contains:
-
-- `Mxx-spec.md`
-- `Mxx-repository-audit.md`
-- `Mxx-implementation-plan.md`
-- `Mxx-implementation-prompt.md`
-- `Mxx-plan-judge-prompt.md`
-- `Mxx-implementation-report.md`
-- `Mxx-independent-judge-prompt.md`
-- `Mxx-manual-smoke-checklist.md`
-- `Mxx-freeze-report.md`
-
-## Continuity and handoff rule
-
-The repository must keep `docs/PROJECT-STATE.md` as the live operational handoff. At every authorization, failure, published CI result, judge verdict, smoke result, or freeze:
-
-- update the current gate, blockers, exact next action, and prohibited actions;
-- link the relevant SHA/run without rewriting an earlier historical verdict;
-- distinguish a focused/local pass from the complete authoritative sequence;
-- require terminal command output before recording `PASS`;
-- leave private ignored inputs uninspected and absent from evidence inventories;
-- direct the next developer or agent to verify Git and hosted CI rather than trusting stale prose.
-
-Frozen normative artifacts remain unchanged except for explicit amendments or non-normative lifecycle pointers.
-
-## Change-control rule
-
-A frozen spec may only be changed through an explicit amendment documenting:
-
-- the old rule;
-- the new rule;
-- the reason;
-- affected tests and artifacts;
-- approval.
+Frozen product/architecture ADRs and approved specs change only through an explicit amendment recording old rule, new rule, reason, affected tests/artifacts, and approval. Status changes use `PROJECT-STATE.md` and `EVIDENCE-LOG.md`, not edits to frozen contracts.
