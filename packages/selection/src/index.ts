@@ -52,3 +52,5 @@ export function fuzzyTokenErrorBudget(passageTokenCount: number): number {
 export function isConfidence(value: number): boolean {
   return Number.isFinite(value) && value >= 0 && value <= 1;
 }
+
+export { normalizeSelectionText, type NormalizedSelectionText } from './normalize.js';
